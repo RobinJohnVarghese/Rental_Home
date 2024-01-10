@@ -1,0 +1,38 @@
+.f-wrapper{
+background-color: rgb(99, 65, 65);
+/* margin-bottom: 0rem; */
+flex-shrink: 0; /* Prevent footer from shrinking when content grows */
+position: relative;
+bottom: 0; /* Position the footer at the bottom */
+width: 100%;
+/* position: sticky;
+bottom: 0; */
+}
+
+.f-container{
+    justify-content: space-between;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    color: var(--secondary);
+    
+}
+.f-left{
+    gap: 0rem;
+}
+.f-menu{
+    gap: 1.5rem;
+    margin-top: 0.5rem;
+    font-weight: 500;
+}
+@media (max-width: 768px) {
+    .f-container{
+        justify-content: center;
+    }
+    .f-container>div{
+        align-items: center!important;
+        text-align: center;
+    }
+    .f-right{
+        justify-content: center;
+    }
+}

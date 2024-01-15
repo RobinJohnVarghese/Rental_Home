@@ -53,7 +53,7 @@
 // };
 
 
-import data from "../../utils/slider.json";
+// import data from "../../utils/slider.json";
 import { Swiper, SwiperSlide, useSwiper } from "swiper/react";
 import React, { useState, useEffect } from 'react';
 import { baseURL } from '../../api/api';

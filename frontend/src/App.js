@@ -1,6 +1,7 @@
 import React from 'react'
 import {BrowserRouter as Router,Route, Routes} from "react-router-dom"
-import { HomePage, LoginPage, SignUpPage, ResidenciesPage, SellPage, NotFound,AdminHomePage,AdminLoginPage, AdminUserManagementPage, AdminPostManagementPage } from './pages';
+import { HomePage, LoginPage, SignUpPage, ResidenciesPage, SellPage, ProfilePage, NotFound
+  ,AdminHomePage,AdminLoginPage, AdminUserManagementPage, AdminPostManagementPage } from './pages';
 import "./App.css";
 import { AdminUserManagement } from './components';
 
@@ -14,6 +15,9 @@ function App() {
             <Route path="/signup" element={<SignUpPage/>}/>
             <Route path="/residencies" element={<ResidenciesPage/>}/>
             <Route path="/sell" element={<SellPage/>}/>
+            <Route path="/profile" element={<ProfilePage/>}/>
+
+
 
             <Route path="/admin" element={<AdminHomePage/>}/>
             <Route path='/admin-login' element={<AdminLoginPage/>} />

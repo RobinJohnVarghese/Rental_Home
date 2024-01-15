@@ -1,5 +1,16 @@
 /* styles.css */
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
 
+
+.r-wrapper{
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
 .form-container {
     max-width: 90%;
     margin: auto;
@@ -12,10 +23,15 @@
   
   .form-label {
     margin-bottom: 10px;
-    padding: 5px;
+    padding: 20px;
   }
   
   .form-input {
+    margin-bottom: 10px;
+    padding: 5px;
+  }
+  .form-textarea{
+    min-width: 100%;
     margin-bottom: 10px;
     padding: 5px;
   }
@@ -25,3 +41,49 @@
     margin-top: 10px;
   }
   
+/* Responsive Design */
+
+@media (min-width: 1200px) {
+  /* Large screens - 4 columns */
+  .form-label {
+    width: 50%;
+    box-sizing: border-box;
+    float: left;
+  }
+
+  .form-input {
+    width: 50%;
+    box-sizing: border-box;
+  }
+  .form-textarea{
+    width: 100%;
+    box-sizing: border-box;
+    padding-left: 10;
+  }
+}
+
+@media (max-width: 1199px) and (min-width: 768px) {
+  /* Medium screens - 3 columns */
+  .form-label {
+    width: 33.33%;
+    box-sizing: border-box;
+    float: left;
+  }
+
+  .form-input,
+  .form-textarea {
+    width: 66.66%;
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 767px) {
+  /* Small screens - 2 columns */
+  .form-label,
+  .form-input,
+  .form-textarea {
+    width: 100%;
+    box-sizing: border-box;
+    float: none;
+  }
+}

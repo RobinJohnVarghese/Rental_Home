@@ -11,7 +11,7 @@ function SellPage({ isAuthenticated }) {
       <div>
         <Header/>
         <Sell/> 
-        <Footer/> 
+        {/* <Footer/>  */}
       </div>        
     )  
   }else{

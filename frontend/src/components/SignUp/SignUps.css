@@ -1,4 +1,10 @@
 
+
+.r-wrapper{
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+}
 .auth__card {
     width: 80%;
     max-width: 400px; /* Limit the card width */

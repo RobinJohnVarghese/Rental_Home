@@ -16,6 +16,8 @@ import './Login.css';
 const Login = ({ login }) => {
   const navigator = useNavigate();
   const dispatch = useDispatch();
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
 
   const [formData, setFormData] = useState({
     email: '',
@@ -54,13 +56,13 @@ const Login = ({ login }) => {
 
         })
         .catch((error) => {
-          if (error.response && error.response.status === 401) {
+          if (error.code === 'ERR_BAD_REQUEST') {
             // Unauthorized: Invalid credentials
-            // setEmailError('Invalid email or password');
-            // setPasswordError('Invalid email or password');
+            // setEmailError('Invalid email ');
+            setPasswordError('Invalid email or password');
           } else {
             // Other errors
-            // console.error('Login error:', error);
+            console.error('Login error:', error);
           }
         });
     }
@@ -69,6 +71,7 @@ const Login = ({ login }) => {
   };
 
   return (
+    <div id="login" className="r-wrapper">
     <div className='card'>
       <div className='auth'>
         <Helmet>
@@ -88,6 +91,7 @@ const Login = ({ login }) => {
               onChange={e => onChange(e)}
               required
             />
+            {emailError && <p className={'error-message'}>{emailError}</p>}
           </div>
           <div className='auth__form__group'>
             <input
@@ -99,6 +103,7 @@ const Login = ({ login }) => {
               onChange={e => onChange(e)}
               minLength='6'
             />
+            {passwordError && <p className={'error-message'}>{passwordError}</p>}
           </div>
           <button className='auth__form__button'>Login</button>
         </form>
@@ -106,6 +111,7 @@ const Login = ({ login }) => {
           Don't have an account? <Link className='auth__authtext__link' to='/signup'>Sign Up</Link>
         </p>
       </div>
+    </div>
     </div>
   );
 };

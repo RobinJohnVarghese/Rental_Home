@@ -2,9 +2,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework import permissions
+from rest_framework import status
 from .models import Listing
-from .serializers import ListingSerializer, listingDetailSerializer
+from .serializers import ListingSerializer, listingDetailSerializer,CreatelistingSerializer
 from datetime import datetime, timezone, timedelta
+from rest_framework import generics
 
 class ListingsView(ListAPIView):
     queryset = Listing.objects.order_by('-list_date').filter(is_published=True)
@@ -189,3 +191,81 @@ class SearchView(APIView):
         serializer = ListingSerializer(queryset, many=True)
 
         return Response(serializer.data)
+    
+    
+from rest_framework.decorators import api_view,authentication_classes, permission_classes
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+   
+# @api_view(['POST'])
+# # @authentication_classes([TokenAuthentication])  # Use appropriate authentication class
+# # @permission_classes([IsAuthenticated])
+# def Create_Listing(request):
+#     print("******************************************")
+#     if request.method == 'POST':
+#         print("++++++++++++++++++++++++++++++++++++++++",request.data)
+#         serializer = CreatelistingSerializer(data=request.data)
+#         print("++++++++++++++++++++++++++++++++++++++++",serializer)
+
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+class CreateListing(APIView):
+    # permission_classes = (permissions.AllowAny, )
+    serializer_class = CreatelistingSerializer
+    # def post(self, request,format=None, *args, **kwargs):
+    #     print("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",request.data)
+    #     serializer = self.get_serializer(data=request.data)
+    #     print("++++++++++++++++++++++++++++++++++++++++",serializer.is_valid)
+    #     serializer.is_valid(raise_exception=True)
+    #     self.perform_create(serializer)
+    #     headers = self.get_success_headers(serializer.data)
+    #     return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+    def post(self, request, format=None, *args, **kwargs):
+        print("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT", request.data)
+        serializer = self.serializer_class(data=request.data)
+        print("++++++++++++++++++++++++++++++++++++++++", serializer.is_valid)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    # Implement the perform_create method to save the listing
+    def perform_create(self, serializer):
+        serializer.save(realtor=self.request.user)
+    
+# from rest_framework.authentication import TokenAuthentication
+# from rest_framework.permissions import IsAuthenticated   
+    
+    
+# class CreateListing(APIView):
+#     # def create_listing(request):
+#     #     token = request.auth
+        
+#     # authentication_classes = [TokenAuthentication]
+#     permission_classes = (permissions.AllowAny, )
+#     serializer_class = CreatelistingSerializer
+#     # print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+#     def post(self, request, *args, **kwargs):
+#         token = request.auth
+#         # print(f"++++++++++++++++Received token++++++++++: {token}")
+#         data = request.data.copy()
+        
+#         # Handle image uploads separately
+#         image_serializer = ListingImageSerializer(data=data)
+#         if image_serializer.is_valid():
+#             # print("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")
+#             # Process the image here, e.g., save to the model or temporary storage
+#             data['photo_main'] = image_serializer.validated_data['image']
+        
+#         serializer = CreatelistingSerializer(data=data)
+#         if serializer.is_valid():
+#             # print("CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC")
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         # print('DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD')
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

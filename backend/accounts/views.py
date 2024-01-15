@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework import permissions
 from django.http import JsonResponse
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .serializers import UserRegistrationSerializer
+from .serializers import UserRegistrationSerializer,UserProfileSerializer
 from django.conf import settings
 from django.middleware import csrf
 from django.http import JsonResponse
@@ -14,6 +14,8 @@ from rest_framework import generics, permissions, status
 from django.utils import timezone
 # from .models import UserToken
 # from .models import AccessToken
+from .models import UserProfile
+
 User = get_user_model()
 
 
@@ -63,7 +65,8 @@ class LoginView(APIView):
     def post(self, request, format=None):
         data = request.data
         response = Response()
-        # print(response,"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+        # print("UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU")
+        # print(response,"+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
         email = data.get('email', None)
         password = data.get('password', None)
         # print(email,password,"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")
@@ -73,12 +76,12 @@ class LoginView(APIView):
         if user is not None:
             # print(user,"DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD")
             if user.is_active:
-                print(user,"EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
+                # print(user,"EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
                 data = get_tokens_for_user(user)
                 # access_token, created = AccessToken.objects.get_or_create(user=user)
                 # access_token.token = data["access"]
                 # access_token.save()
-                print("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",data)
+                # print("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",data)
                 response = JsonResponse({
                     "data": data,
                     "user": {
@@ -134,6 +137,45 @@ class LogoutView(APIView):
         #     access_token.delete()
 
         return response
+    
+# from rest_framework.authentication import TokenAuthentication
+# from rest_framework.permissions import IsAuthenticated   
+    
+class UserProfileView(APIView):
+    # permission_classes = (permissions.AllowAny, )
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAuthenticated]
+    # def get(self, request):
+    #     user_profile = UserProfile.objects.all()
+    #     # user_profile = UserProfile.objects.get(user=request.user)
+    #     serializer_class = UserProfileSerializer
+    def get(self, request):
+        user_profile = UserProfile.objects.get(user=request.user)
+        print("$$$$$$$$$$$$$$$$$$$$",user_profile)
+        serializer = UserProfileSerializer(user_profile)
+        print("EEEEEEEEEEEEEEE",serializer.data)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = UserProfileSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response({'message': 'Profile created successfully', 'data': serializer.data}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request):
+        user_profile = UserProfile.objects.get(user=request.user)
+        serializer = UserProfileSerializer(user_profile, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'message': 'Profile updated successfully', 'data': serializer.data})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request):
+        user_profile = UserProfile.objects.get(user=request.user)
+        print("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY",request.user)
+        user_profile.delete()
+        return Response({'message': 'Profile deleted successfully'},status=status.HTTP_204_NO_CONTENT)
 
 
         # if password == password2:

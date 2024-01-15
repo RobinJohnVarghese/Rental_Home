@@ -21,7 +21,7 @@ const SignUp = ({ setAlert, signup }) => {
 
     const [server_error, setServerError] = useState({})
     // const [nameError, setNameError] = useState('');
-    // const [emailError, setEmailError] = useState('');
+    const [emailError, setEmailError] = useState('');
     // const [passwordError, setPasswordError] = useState('');
     // const [Password2Error, setPassword2Error] = useState('');    
     const [formData, setFormData] = useState({
@@ -58,7 +58,7 @@ const SignUp = ({ setAlert, signup }) => {
             .catch((error) => {
                 if (error.code === 'ERR_BAD_REQUEST') {
                     // Assuming 400 status code indicates a validation error
-                    // setEmailError(error.response.data.email ? error.response.data.email : '');
+                    setEmailError(error.response.data.email ? error.response.data.email : '');
                     // setPasswordError(error.response.data.password ? error.response.data.password : '');
                     // setNameError(error.response.data.name ? error.response.data.name : '');
                 } else {
@@ -74,6 +74,7 @@ const SignUp = ({ setAlert, signup }) => {
     //     return <redirect to='/' />;
     
     return (
+    <div id="signup" className="r-wrapper">
       <div className='card'>
         <div className='auth'>
             <Helmet>
@@ -107,6 +108,7 @@ const SignUp = ({ setAlert, signup }) => {
                         onChange={e => onChange(e)}
                         required 
                     />
+                    {emailError && <p className={'error-message'}>{emailError}</p>}
                 </div>
                 <div className='auth__form__group'>
                     <input
@@ -137,6 +139,7 @@ const SignUp = ({ setAlert, signup }) => {
             </p>
         </div>
         </div>
+    </div>
     );
 
 };

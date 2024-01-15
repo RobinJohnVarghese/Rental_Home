@@ -2,7 +2,7 @@
 
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import UserAccount
+from .models import UserAccount,UserProfile
 
 # Register your UserAccount model with UserAdmin
 @admin.register(UserAccount)
@@ -30,6 +30,11 @@ class CustomUserAdmin(UserAdmin):
 
     # Set the ordering of objects in the admin panel
     ordering = ('email',)
+    
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ('user','email', 'name', 'phone', 'age', 'photo', 'description')
+
+admin.site.register(UserProfile, UserProfileAdmin)
 
 
 # class UserTokenAdmin(admin.ModelAdmin):

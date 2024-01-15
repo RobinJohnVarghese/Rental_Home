@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
-
+from realtors.models import Realtor
 
 
 
@@ -46,6 +46,44 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     
     def __str__(self):
         return self.email
+    
+    
+class UserProfile(models.Model):
+    user = models.OneToOneField(UserAccount, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)  
+    email = models.EmailField(max_length=255)
+    phone = models.CharField(max_length=15, blank=True, null=True)
+    age = models.PositiveIntegerField(blank=True, null=True)
+    photo = models.ImageField(upload_to='user_photos/', blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.user.email}'s Profile"
+    def save(self, *args, **kwargs):
+        # Update corresponding UserAccount fields
+        self.user.email = self.email
+        self.user.name = self.name  
+        self.user.save()
+        super().save(*args, **kwargs)
+        
+        
+    # def save(self, *args, **kwargs):
+    #     # Call the parent class's save method
+    #     super().save(*args, **kwargs)
+
+    #     # Check if a corresponding Realtor instance already exists
+    #     if not hasattr(self, 'realtor'):
+    #         # Create a new Realtor instance linked to this UserProfile
+    #         Realtor.objects.create(
+    #             name=self.name,
+    #             email=self.email,
+    #             phone=self.phone,
+    #             description=self.description
+    #             # You may need to adjust the fields based on your requirements
+    #         )
+    
+    
+    
     
     
 # class UserToken(models.Model):

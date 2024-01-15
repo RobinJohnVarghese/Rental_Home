@@ -1,8 +1,7 @@
 import React, { useState,Fragment } from "react";
 import {Link, NavLink,useNavigate } from 'react-router-dom'
-
 import "./Header.css";
-import { BiMenuAltRight } from "react-icons/bi";
+import { BiMenuAltRight, BiUser, BiNote, BiLogOut } from "react-icons/bi";
 import { getMenuStyles } from "../../utils/common";
 import useHeaderColor from "../../hooks/useHeaderColor";
 import OutsideClickHandler from "react-outside-click-handler";
@@ -16,10 +15,9 @@ const Header = () => {
   const navigator = useNavigate();
   const dispatch = useDispatch();
   const [menuOpened, setMenuOpened] = useState(true);
+  const [showDropdown, setShowDropdown] = useState(false);
   const headerColor = useHeaderColor();
   const user = useSelector((state)=>state.user);
-  // console.log("_____---_____---_________",user)
-  // const checkuser1 = ()=>{console.log("Checking User : ",user.user.username)}
   const userLogout =()=>{
     Cookies.remove('accessToken');
     localStorage.removeItem('accessToken');
@@ -27,8 +25,13 @@ const Header = () => {
     dispatch(clearAuth());
     navigator('/');
   }
-  // const logoutUser = e => {
-  //   e.preventDefault();}
+  const toggleDropdown = () => {
+    setShowDropdown((prev) => !prev);
+  };
+
+  const closeDropdown = () => {
+    setShowDropdown(false);
+  };
 
   return (
     <section className="h-wrapper" style={{ background: headerColor }}>
@@ -36,11 +39,6 @@ const Header = () => {
         {/* logo */}
         <Link className='navbar__top__logo__link' to='/'><img src="./logo1.png" alt="logo" width={100} /></Link>
 
-        {/* <div className="flexCenter search-bar">
-            <HiLocationMarker color="var(--blue)" size={25} />
-            <input type="text" />
-            <button className="button">Search</button>
-        </div> */}
 
         {/* menu */}
         <OutsideClickHandler
@@ -61,20 +59,32 @@ const Header = () => {
           </div>
 
 
-            {/* <a href="#residencies">Residencies</a>
-            <a href="#value">Our Value</a>
-            <a href="#contact-us">Contact Us</a>
-            <a href="#get-started">Get Started</a>
-            <button className="button">
-              <a href="mailto:zainkeepscode@gmail.com">Contact</a>
-            </button> */}
             <Fragment>
               <NavLink className='navbar__bottom__item' exact to='/'>Home</NavLink>
               <NavLink className='navbar__bottom__item'  to='/residencies'>Residencies</NavLink>
               <NavLink className='navbar__bottom__item'  to='/sell'>Sell</NavLink>
               {/* <NavLink className='navbar__bottom__item' onClick={checkuser1}>Check</NavLink> */}
               {user.isAuthenticated ?  (
-                <Link className='navbar__bottom__item' onClick={userLogout}>Logout</Link>
+                // <Link className='navbar__bottom__item' onClick={userLogout}>Logout</Link>
+                <div className="navbar__bottom__item navbar__bottom__dropdown" onClick={toggleDropdown}>
+                <BiUser size={30} />
+                {showDropdown && (
+                  <div className="navbar__dropdown-content">
+                    <div>
+                    <BiUser size={20} />
+                    <NavLink to="/profile">Profile</NavLink>
+                    </div>
+                    <div>
+                        <BiNote size={20} />
+                        <NavLink to="/my-posts">My Posts</NavLink>
+                    </div>
+                    <div onClick={userLogout}>
+                      <BiLogOut size={20} />
+                      Logout
+                    </div>
+                  </div>
+                )}
+              </div>
               ) : (
                 <Fragment>
                 <NavLink className='navbar__bottom__item' to='/login'>Sign In</NavLink>
@@ -82,23 +92,7 @@ const Header = () => {
               </Fragment>
               )}
             </Fragment>
-             {/* {user.isAuthenticated ?  (
-              <Fragment>
-                <NavLink className='navbar__bottom__item' exact to='/'>Home</NavLink>
-                <NavLink className='navbar__bottom__item'  to='/residencies'>Residencies</NavLink>
-                <NavLink className='navbar__bottom__item'  to='/sell'>Sell</NavLink>
-                <NavLink className='navbar__bottom__item'  to=''>{checkuser}</NavLink>
-                <NavLink className='navbar__bottom__item' onClick={checkuser}>Logout</NavLink>
-              </Fragment>
-            ) : (
-              <Fragment>
-                <NavLink className='navbar__bottom__item' exact to='/'>Home</NavLink>
-                <NavLink className='navbar__bottom__item'  to='/residencies'>Residencies</NavLink>
-                <NavLink className='navbar__bottom__item'  to='/sell'>Sell</NavLink>
-                <NavLink className='navbar__bottom__item'  to='/login'>Sign In</NavLink>
-                <NavLink className='navbar__bottom__item'  to='/signup'>Sign Up</NavLink>
-              </Fragment>
-            )} */}
+
           </div>
         </OutsideClickHandler>
 

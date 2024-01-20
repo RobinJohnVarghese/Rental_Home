@@ -58,7 +58,7 @@ import { Swiper, SwiperSlide, useSwiper } from "swiper/react";
 import React, { useState, useEffect } from 'react';
 import { baseURL } from '../../api/api';
 import { useSelector} from "react-redux";
-
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 // Import Swiper styles
 import "swiper/css";
@@ -100,7 +100,7 @@ useEffect(() => {
   fetchData();
 }, []);
 console.log("FGDR",listings,"RRDDDFREEDDDF")
-
+console.log("card.id",listings.id)
 
 
 
@@ -124,34 +124,39 @@ console.log("FGDR",listings,"RRDDDFREEDDDF")
 
 
 
-  return (
-    <div id="residencies" className="r-wrapper">
-      <div className="paddings innerWidth r-container">
-        <div className="flexColStart r-head">
+return (
+  <div id="residencies" className="r-wrapper">
+    <div className="paddings innerWidth r-container">
+      <div className="flexColStart r-head">
         <span className="orangeText">Best Choices</span>
-          <span className="primaryText">Popular Residencies</span>
-        </div>
-        <Swiper {...sliderSettings}>
-          <SlideNextButton />
-          {/* slider */}
-          {listings.results && listings.results.map((card, i) => (
-            <SwiperSlide key={i}>
+        <span className="primaryText">Popular Residencies</span>
+      </div>
+      <Swiper {...sliderSettings}>
+        <SlideNextButton />
+        {/* slider */}
+        {listings.results && listings.results.map((card, i) => (
+          <SwiperSlide key={i}>
+            {/* Wrap the card in a Link to navigate to the detail page */}
+            {/* to={`/residencies/detail/${card.id}`} */}
+            <Link to={`/residencies/detail/${card.id}`} className="r-card-link">
+              {/* {console.log("card.id",listings.id)} */}
               <div className="flexColStart r-card">
                 <img src={card.photo_main} alt="home" />
 
                 <span className="secondaryText r-price">
-                  <span style={{ color: "orange" }}>$</span>
+                  <span style={{ color: 'orange' }}>$</span>
                   <span>{card.price}</span>
                 </span>
                 <span className="primaryText">{card.title}</span>
                 <span className="secondaryText">{card.address}</span>
               </div>
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </div>
+            </Link>
+          </SwiperSlide>
+        ))}
+      </Swiper>
     </div>
-  );
+  </div>
+);
 };
 
 export default Residencies;

@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils.timezone import now
-from realtors.models import Realtor
+from accounts.models import UserAccount
 
 class Listing(models.Model):
     class SaleType(models.TextChoices):
@@ -12,7 +12,7 @@ class Listing(models.Model):
         CONDO = 'Condo'
         TOWNHOUSE = 'Townhouse'
 
-    realtor = models.ForeignKey(Realtor, on_delete=models.DO_NOTHING,blank=True,null=True)
+    realtor = models.ForeignKey(UserAccount, on_delete=models.DO_NOTHING,blank=True,null=True)
     slug = models.CharField(max_length=200, unique=True)
     title = models.CharField(max_length=150)
     address = models.CharField(max_length=150)
@@ -33,21 +33,6 @@ class Listing(models.Model):
     photo_3 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True,null=True)
     photo_4 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True,null=True)
     photo_5 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True,null=True)
-    photo_6 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True,null=True)
-    photo_7 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True,null=True)
-    photo_8 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True,null=True)
-    photo_9 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True,null=True)
-    photo_10 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True,null=True)
-    photo_11 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True,null=True)
-    photo_12 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True,null=True)
-    photo_13 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True,null=True)
-    photo_14 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True,null=True)
-    photo_15 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True,null=True)
-    photo_16 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True,null=True)
-    photo_17 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True,null=True)
-    photo_18 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True,null=True)
-    photo_19 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True,null=True)
-    photo_20 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True,null=True)
     is_published = models.BooleanField(default=True)
     list_date = models.DateTimeField(default=now, blank=True)
 

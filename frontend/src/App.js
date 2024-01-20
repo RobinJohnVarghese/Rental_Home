@@ -1,6 +1,6 @@
 import React from 'react'
 import {BrowserRouter as Router,Route, Routes} from "react-router-dom"
-import { HomePage, LoginPage, SignUpPage, ResidenciesPage, SellPage, ProfilePage, NotFound
+import { HomePage, LoginPage, SignUpPage, ResidenciesPage, SellPage, ProfilePage,DetailsPage, NotFound
   ,AdminHomePage,AdminLoginPage, AdminUserManagementPage, AdminPostManagementPage } from './pages';
 import "./App.css";
 import { AdminUserManagement } from './components';
@@ -16,7 +16,7 @@ function App() {
             <Route path="/residencies" element={<ResidenciesPage/>}/>
             <Route path="/sell" element={<SellPage/>}/>
             <Route path="/profile" element={<ProfilePage/>}/>
-
+            <Route path="/residencies/detail/:id" element={<DetailsPage/>}/>
 
 
             <Route path="/admin" element={<AdminHomePage/>}/>

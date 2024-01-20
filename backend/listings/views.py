@@ -4,6 +4,7 @@ from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework import permissions
 from rest_framework import status
 from .models import Listing
+from accounts.models import UserAccount
 from .serializers import ListingSerializer, listingDetailSerializer,CreatelistingSerializer
 from datetime import datetime, timezone, timedelta
 from rest_framework import generics
@@ -215,28 +216,45 @@ from rest_framework.permissions import IsAuthenticated
     
     
 class CreateListing(APIView):
-    # permission_classes = (permissions.AllowAny, )
-    serializer_class = CreatelistingSerializer
-    # def post(self, request,format=None, *args, **kwargs):
-    #     print("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",request.data)
-    #     serializer = self.get_serializer(data=request.data)
-    #     print("++++++++++++++++++++++++++++++++++++++++",serializer.is_valid)
+   
+    # serializer_class = CreatelistingSerializer
+    
+    # def post(self, request, format=None, *args, **kwargs):
+        
+    def post(self, request, *args, **kwargs):
+        print(request.data)
+        # Extract realtor from the request data
+        realtor_id = request.data.get('realtor_id')
+        print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$',realtor_id)
+        # Ensure that the realtor is valid
+        try:
+            realtor = UserAccount.objects.get(id=realtor_id)
+            print('****realtor****', realtor)
+        except UserAccount.DoesNotExist:
+            return Response({'error': 'realtor not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Associate the service with the realtor
+        request.data['realtor'] = realtor.id
+
+        serializer = CreatelistingSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+        
+    #     print("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT", request.data)
+    #     # request.data['realtor'] = {'email': request.data['realtor']}
+    #     serializer = self.serializer_class(data=request.data)
+    #     print("++++++++++++++++++++++++++++++++++++++++", serializer.is_valid)
     #     serializer.is_valid(raise_exception=True)
     #     self.perform_create(serializer)
     #     headers = self.get_success_headers(serializer.data)
     #     return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-    def post(self, request, format=None, *args, **kwargs):
-        print("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT", request.data)
-        serializer = self.serializer_class(data=request.data)
-        print("++++++++++++++++++++++++++++++++++++++++", serializer.is_valid)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-    # Implement the perform_create method to save the listing
-    def perform_create(self, serializer):
-        serializer.save(realtor=self.request.user)
+    # # Implement the perform_create method to save the listing
+    # def perform_create(self, serializer):
+    #     serializer.save(realtor=self.request.user)
     
 # from rest_framework.authentication import TokenAuthentication
 # from rest_framework.permissions import IsAuthenticated   

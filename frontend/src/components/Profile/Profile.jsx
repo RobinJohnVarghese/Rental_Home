@@ -3,14 +3,16 @@ import './Profile.css';
 import { useSelector, } from "react-redux";
 import axios from 'axios';
 import { baseURL,imageBaseUrl } from '../../api/api';
+import Cookies from 'js-cookie';
 // import default_profile.jpg from frontend/public
 
 
 function Profile() {
   const user = useSelector((state)=>state.user);
-  console.log("+++++ user accessToken",user.accessToken)
+  // console.log("+++++ user ",user.data)
   const [editMode, setEditMode] = useState(false);
   // console.log("%%%%%%%%%%%%%%%%%%%%%",editMode)
+  const [successMessage, setSuccessMessage] = useState('');
   const [profile, setProfile] = useState({
     name: user.user.name || "",
     email: user.user.username || "",
@@ -24,7 +26,7 @@ function Profile() {
     // Fetch user profile data when the component mounts
     const fetchUserProfile = async () => {
       try {
-        console.log("###################",)
+        // console.log("###################",)
         const response = await axios.get(
           `${baseURL}accounts/user_profile`, 
           {
@@ -36,7 +38,7 @@ function Profile() {
           }
         );
         const userProfileData = response.data; 
-        console.log("//////////////", response.data);
+        // console.log("//////////////", response.data);
         setProfile((prevProfile) => ({
           ...prevProfile,
           phone: userProfileData.phone,
@@ -57,30 +59,112 @@ function Profile() {
   }, [ editMode, user.accessToken ]);
 
   console.log("^^^^^^^^^^^^^^^^^^ profile",profile)
+  // console.log("^^^^^^^^^^^^^^^^^^ user",user)
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setProfile({ ...profile, [name]: value });
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setProfile((prevProfile) => ({
+      ...prevProfile,
+      [name]: value,
+    }));
   };
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setProfile({ ...profile, profilePicture: file });
+  
+  const handleImageChange = (event) => {
+    const { name, files } = event.target;
+    setProfile((prevProfile) => ({
+      ...prevProfile,
+      [name]: files[0],  // Assuming a single file is expected
+    }));
   };
+  
 
-  const handleCancel = () => {
-    // Add logic to save the updated profile data
-    setEditMode(false);
+
+  const handleUpdate = async () => {
+    try {
+      console.log("************* Entered to try ***********************")
+      
+  
+      const formData = new FormData();
+      console.log("%%%%%%%%%%% form Data",formData)
+      console.log("Profile state:", profile);
+
+      // Append the updated fields to the form data
+      formData.append('name', profile.name);
+      formData.append('email', profile.email);
+      formData.append('phone', profile.phone || '');
+      formData.append('age', profile.age || '');
+      formData.append('description', profile.description || '');
+  
+      if (profile.profilePicture) {
+        formData.append('profilePicture', profile.profilePicture);
+      }
+     
+      console.log("&&&&&&&&&&&&& form Data",formData)
+      // Check if the user already has a profile (PUT) or not (POST)
+      
+  
+      // Make the API request
+      const response = await axios.put(`${baseURL}accounts/user_profile`,formData, 
+      {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type' :'application/json',
+          Authorization: `Bearer ${user.accessToken}`, 
+        },
+      }
+    );
+    console.log("EWEWEWEFWEWEWEWEWE profile picture",formData.profilePicture)
+  
+      console.log('Profile updated successfully:', response.data);
+      setSuccessMessage('Profile updated successfully');
+
+      // Clear the success message after a few seconds (adjust as needed)
+      setTimeout(() => {
+        setSuccessMessage('');
+      }, 3000); // Clear the message after 3 seconds
+  
+      // Exit edit mode
+      setEditMode(false);
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      if (error.response) {
+        console.error('Response data:', error.response.data);
+      }
+    }
   };
+  
 
-  const handleUpdate = () => {
-    // Add logic to update the profile data
-    setEditMode(false);
-  };
-
-  const handleDelete = () => {
-    // Add logic to delete the profile
-    // Display a confirmation dialog before deleting
+  const handleDelete = async () => {
+    // Display a confirmation dialog before deleting (optional)
+    const confirmDelete = window.confirm('Are you sure you want to delete your profile?');
+  
+    if (confirmDelete) {
+      try {
+        // Make an API request to delete the user profile
+        const response = await axios.delete(`${baseURL}accounts/user_profile`, {
+          headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${user.accessToken}`,
+          },
+        });
+  
+        console.log('Profile deleted successfully:', response.data);
+  
+        // Clear user data from local storage or wherever it is stored
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('user');
+        Cookies.remove('accessToken');
+        // Navigate to the sign-in page (assuming your sign-in page route is '/signin')
+        window.location.href = '/signup';
+      } catch (error) {
+        console.error('Error deleting profile:', error);
+        if (error.response) {
+          console.error('Response data:', error.response.data);
+        }
+        // Handle the error (display an error message, etc.)
+      }
+    }
   };
 
 
@@ -103,6 +187,7 @@ function Profile() {
                 <p className="text-muted">{profile.email}</p>
               </div>
             </div>
+            {successMessage && <div className="success-message">{successMessage}</div>}
               <form>
                 <label htmlFor="name">Name:</label>
                 <input
@@ -158,14 +243,10 @@ function Profile() {
 
                 <div className="edit-button-container">
                   
-                    <button style={{marginRight:"5px"}} type="button" onClick={handleUpdate}>
+                    <button style={{marginRight:"5px",transition: "background-color 0.3s"}} type="button" onClick={handleUpdate}>
                       Update
                     </button>
-                  
-                  <button style={{marginRight:"5px"}} type="button" onClick={handleCancel}>
-                    Cancel
-                  </button>
-                  <button type="button" onClick={handleDelete}>
+                  <button style={{backgroundColor: "red",transition: "background-color 0.3s"}}type="button" onClick={handleDelete}>
                     Delete
                   </button>
                 </div>

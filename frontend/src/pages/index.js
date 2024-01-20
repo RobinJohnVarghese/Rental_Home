@@ -4,6 +4,7 @@ export {default as HomePage} from './HomePage';
 export {default as ResidenciesPage} from './ResidenciesPage';
 export {default as SellPage} from './SellPage';
 export {default as ProfilePage} from './ProfilePage';
+export {default as DetailsPage} from './DetailsPage';
 export {default as NotFound} from './NotFound';
 
 

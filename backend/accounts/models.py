@@ -30,6 +30,10 @@ class UserAccountManager(BaseUserManager):
 class UserAccount(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
+    phone = models.CharField(max_length=15, blank=True, null=True)
+    age = models.PositiveIntegerField(blank=True, null=True)
+    photo = models.ImageField(upload_to='user_photos/', blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
@@ -48,23 +52,23 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
         return self.email
     
     
-class UserProfile(models.Model):
-    user = models.OneToOneField(UserAccount, on_delete=models.CASCADE)
-    name = models.CharField(max_length=255)  
-    email = models.EmailField(max_length=255)
-    phone = models.CharField(max_length=15, blank=True, null=True)
-    age = models.PositiveIntegerField(blank=True, null=True)
-    photo = models.ImageField(upload_to='user_photos/', blank=True, null=True)
-    description = models.TextField(blank=True, null=True)
+# class UserProfile(models.Model):
+#     user = models.OneToOneField(UserAccount, on_delete=models.CASCADE)
+#     name = models.CharField(max_length=255)  
+#     email = models.EmailField(max_length=255)
+#     phone = models.CharField(max_length=15, blank=True, null=True)
+#     age = models.PositiveIntegerField(blank=True, null=True)
+#     photo = models.ImageField(upload_to='user_photos/', blank=True, null=True)
+#     description = models.TextField(blank=True, null=True)
 
-    def __str__(self):
-        return f"{self.user.email}'s Profile"
-    def save(self, *args, **kwargs):
-        # Update corresponding UserAccount fields
-        self.user.email = self.email
-        self.user.name = self.name  
-        self.user.save()
-        super().save(*args, **kwargs)
+#     def __str__(self):
+#         return f"{self.user.email}'s Profile"
+#     def save(self, *args, **kwargs):
+#         # Update corresponding UserAccount fields
+#         self.user.email = self.email
+#         self.user.name = self.name  
+#         self.user.save()
+#         super().save(*args, **kwargs)
         
         
     # def save(self, *args, **kwargs):

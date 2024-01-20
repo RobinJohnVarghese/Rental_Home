@@ -14,7 +14,7 @@ from rest_framework import generics, permissions, status
 from django.utils import timezone
 # from .models import UserToken
 # from .models import AccessToken
-from .models import UserProfile
+from .models import UserAccount
 
 User = get_user_model()
 
@@ -150,32 +150,37 @@ class UserProfileView(APIView):
     #     # user_profile = UserProfile.objects.get(user=request.user)
     #     serializer_class = UserProfileSerializer
     def get(self, request):
-        user_profile = UserProfile.objects.get(user=request.user)
-        print("$$$$$$$$$$$$$$$$$$$$",user_profile)
+        user_profile = request.user
         serializer = UserProfileSerializer(user_profile)
-        print("EEEEEEEEEEEEEEE",serializer.data)
         return Response(serializer.data)
-
-    def post(self, request):
-        serializer = UserProfileSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(user=request.user)
-            return Response({'message': 'Profile created successfully', 'data': serializer.data}, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # user_profile = UserAccount.objects.get(user=request.user)
+        # print("$$$$$$$$$$$$$$$$$$$$",user_profile)
+        # serializer = UserProfileSerializer(user_profile)
+        # print("EEEEEEEEEEEEEEE",serializer.data)
+        # return Response(serializer.data)
 
     def put(self, request):
-        user_profile = UserProfile.objects.get(user=request.user)
+        user_profile = request.user
         serializer = UserProfileSerializer(user_profile, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response({'message': 'Profile updated successfully', 'data': serializer.data})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # user_profile = UserAccount.objects.get(user=request.user)
+        # serializer = UserProfileSerializer(user_profile, data=request.data)
+        # if serializer.is_valid():
+        #     serializer.save()
+        #     return Response({'message': 'Profile updated successfully', 'data': serializer.data})
+        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request):
-        user_profile = UserProfile.objects.get(user=request.user)
-        print("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY",request.user)
+        user_profile = request.user
         user_profile.delete()
-        return Response({'message': 'Profile deleted successfully'},status=status.HTTP_204_NO_CONTENT)
+        return Response({'message': 'Profile deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+        # user_profile = UserAccount.objects.get(user=request.user)
+        # print("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY",request.user)
+        # user_profile.delete()
+        # return Response({'message': 'Profile deleted successfully'},status=status.HTTP_204_NO_CONTENT)
 
 
         # if password == password2:

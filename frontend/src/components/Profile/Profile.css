@@ -56,4 +56,10 @@
     margin-top: 10px;
     padding-left: 5px;
   }
+  .success-message {
+    color: rgb(63, 94, 31);
+    font-weight: bold;
+    font-size: 1.2em; /* Adjust the size as needed */
+    margin-top: 10px; /* Add some space above the message */
+  }
   

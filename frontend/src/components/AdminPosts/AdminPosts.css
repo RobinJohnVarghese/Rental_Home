@@ -1,16 +1,19 @@
 .r-wrapper{
-    height: 100vh;
+    flex: 1;
+    min-height: calc(100vh - 60px);
     margin: 0;
     padding: 0;
   }
   .r-container {
-    gap: 2rem;
-    position: relative;
-    overflow: hidden;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
   }
   
   .r-head{
     margin-bottom: 2rem;
+    padding-left: 10rem;
+    padding-top: 2rem;
   }
   .r-card {
     gap: 0.6rem;

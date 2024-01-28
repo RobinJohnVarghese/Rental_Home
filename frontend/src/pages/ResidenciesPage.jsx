@@ -3,18 +3,6 @@ import { Header,Residencies,Footer} from '../components';
 import { useSelector} from "react-redux";
 
 
-// function ResidenciesPage() {
-//   return (
-    
-//         <div>
-//           <Header/>
-//           <Residencies/> 
-//           <Footer/> 
-//         </div>        
-    
-//   )
-// }
-
 function ResidenciesPage({ isAuthenticated }) {
   const user = useSelector((state)=>state.user);
   // Check if the user is authenticated
@@ -23,7 +11,7 @@ function ResidenciesPage({ isAuthenticated }) {
       <div>
         <Header />
         <Residencies />
-        <Footer />
+        {/* <Footer /> */}
       </div>
     );
   }else{

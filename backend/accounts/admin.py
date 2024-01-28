@@ -2,7 +2,7 @@
 
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import UserAccount
+from .models import UserAccount,Membership
 
 # Register your UserAccount model with UserAdmin
 @admin.register(UserAccount)
@@ -30,25 +30,4 @@ class CustomUserAdmin(UserAdmin):
 
     # Set the ordering of objects in the admin panel
     ordering = ('is_staff','email',)
-    
-# class UserProfileAdmin(admin.ModelAdmin):
-#     list_display = ('user','email', 'name', 'phone', 'age', 'photo', 'description')
-
-# admin.site.register(UserProfile, UserProfileAdmin)
-
-
-# class UserTokenAdmin(admin.ModelAdmin):
-#     list_display = ('id','email', 'access_token')
-#     list_display_links = ('id','email', 'access_token')
-#     search_fields = ('email', 'access_token')
-#     list_per_page = 25
-
-# admin.site.register(UserToken, UserTokenAdmin)
-#  AccessToken
-# class AccessTokenAdmin(admin.ModelAdmin):
-#     list_display = ('user', 'token')
-#     list_display_links = ('user', 'token')
-#     search_fields = ('user',)
-#     list_per_page = 25
-
-# admin.site.register(AccessToken, AccessTokenAdmin)
+admin.site.register(Membership)

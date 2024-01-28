@@ -4,7 +4,7 @@ from accounts.models import UserAccount
 class ListingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Listing
-        fields = ('title', 'address', 'city', 'state', 'price', 'sale_type', 'home_type', 'bedrooms', 'bathrooms', 'sqft', 'photo_main', 'slug')
+        fields = ('id','title', 'address', 'city', 'state', 'price', 'sale_type', 'home_type', 'bedrooms', 'bathrooms', 'sqft', 'photo_main', 'slug')
 
 class listingDetailSerializer(serializers.ModelSerializer):
     class Meta:
@@ -37,7 +37,11 @@ class CreatelistingSerializer(serializers.ModelSerializer):
                 validated_data['realtor'] = realtor
             except UserAccount.DoesNotExist:
                 raise serializers.ValidationError({'realtor_id': 'realtor not found.'})
-
+        # # Check for null values before setting photo fields
+        # for photo_field in ['photo_1', 'photo_2', 'photo_3', 'photo_4', 'photo_5']:
+        #     if photo_field in validated_data and validated_data[photo_field] is None:
+        #         del validated_data[photo_field]
+                
         return super().create(validated_data)
 
 

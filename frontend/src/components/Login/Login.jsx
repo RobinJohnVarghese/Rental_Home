@@ -18,7 +18,7 @@ const Login = ({ login }) => {
   const dispatch = useDispatch();
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
-
+  // const [blocked,setBlocked] = useState('');
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -56,6 +56,9 @@ const Login = ({ login }) => {
 
         })
         .catch((error) => {
+          // if ({ withCredentials: false }){
+          //   setBlocked("Your Blocked By Admin")
+          // }
           if (error.code === 'ERR_BAD_REQUEST') {
             // Unauthorized: Invalid credentials
             // setEmailError('Invalid email ');
@@ -104,6 +107,7 @@ const Login = ({ login }) => {
               minLength='6'
             />
             {passwordError && <p className={'error-message'}>{passwordError}</p>}
+            {/* {blocked && <p className={'error-message'}>{blocked}</p>} */}
           </div>
           <button className='auth__form__button'>Login</button>
         </form>

@@ -1,7 +1,7 @@
 import React, { useState,Fragment } from "react";
 import {Link, NavLink,useNavigate } from 'react-router-dom'
 import "./Header.css";
-import { BiMenuAltRight, BiUser, BiNote, BiLogOut } from "react-icons/bi";
+import { BiMenuAltRight, BiUser, BiNote, BiLogOut, BiFile, BiTab } from "react-icons/bi";
 import { getMenuStyles } from "../../utils/common";
 import useHeaderColor from "../../hooks/useHeaderColor";
 import OutsideClickHandler from "react-outside-click-handler";
@@ -77,6 +77,14 @@ const Header = () => {
                     <div>
                         <BiNote size={20} />
                         <NavLink to="/my-posts">My Posts</NavLink>
+                    </div>
+                    <div>
+                        <BiFile size={20} />
+                        <NavLink to="/notificatons">Notifications</NavLink>
+                    </div>
+                    <div>
+                        <BiTab size={20} />
+                        <NavLink to="/membership">MemberShip</NavLink>
                     </div>
                     <div onClick={userLogout}>
                       <BiLogOut size={20} />

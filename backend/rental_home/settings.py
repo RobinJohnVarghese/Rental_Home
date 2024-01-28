@@ -46,9 +46,12 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework.authtoken',
     'accounts',
+    'admin_side',
     'realtors',
     'listings',
     'contacts',
+    'notification',
+    
     
 ]
 
@@ -97,6 +100,12 @@ DATABASES = {
  		'PORT':'3306',
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST='smtp.gmail.com'

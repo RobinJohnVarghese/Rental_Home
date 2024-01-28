@@ -25,7 +25,7 @@ const Sell = () => {
     sqft: '',
     open_house: false,
     photo_main: null,
-    photo_1: null,photo_2: null,photo_3: null,photo_4: null,photo_5: null,
+    photo_1: "",photo_2: "",photo_3: "",photo_4: "",photo_5: "",
     is_published: true,
     list_date: new Date().toISOString(),
     // Add other fields as needed
@@ -68,12 +68,12 @@ const Sell = () => {
         // Append all form fields to the FormData object
         formDataToSend.append(key, formData[key]);
       });
-  
+      console.log("&&&&&&&&&&&&& form Data",formDataToSend)
       // Make a POST request to your backend API
       const response = axios.post(`${baseURL}listings/create_listing/`,formDataToSend, {
         
         headers: {
-          // Accept: 'application/json',
+          Accept: 'application/json',
           // body: formDataToSend,
           'Content-Type' :'multipart/form-data',
           Authorization: `Bearer ${user.accessToken}`, 
@@ -95,126 +95,134 @@ const Sell = () => {
 
   return (
     
-    <div>
-      <div className="form-container">
+    <div className="form-containerouter">
+      <div className="form-containerinner">
         <h1 className="form-title">Create New Post</h1>
         <form onSubmit={handleSubmit} className="form">
-          <div className="form-group-1">
-            <label className="form-label-30">Realtor:</label>
-            <input className="form-input-70" type="text" name="realtor_id" value={user.user.id} onChange={handleChange} readOnly/>
+          <div className="form-group-1main">
+              <div className="form-group1">
+                  <label className="form-label">Realtor:</label>
+                  <input className="form-input" type="text" name="realtor_id" value={user.user.id} onChange={handleChange} readOnly/>
+              </div>
+              <div className="form-group2">
+                  <label className="form-label">Slug:</label>
+                  <input className="form-input" type="text" name="slug" value={formData.slug} onChange={handleChange} />
+              </div>
           </div>
-          <div className="form-group-1">
-            <label className="form-label-30">Slug:</label>
-            <input className="form-input-70" type="text" name="slug" value={formData.slug} onChange={handleChange} />
+          <div className="form-group-1main">
+                <div className="form-group1">
+                    <label className="form-label">Title:</label>
+                    <input className="form-input" type="text" name="title" value={formData.title} onChange={handleChange} />
+                </div>
+                <div className="form-group2">
+                    <label className="form-label">Address:</label>
+                    <input className="form-input" type="text" name="address" value={formData.address} onChange={handleChange} />
+                </div>
           </div>
-          <div className="form-group-1">
-            <label className="form-label-30">Title:</label>
-            <input className="form-input-70" type="text" name="title" value={formData.title} onChange={handleChange} />
-          </div>
-          <div className="form-group-1">
-            <label className="form-label-30">Address:</label>
-            <input className="form-input-70" type="text" name="address" value={formData.address} onChange={handleChange} />
-          </div>
-          <div className="form-group-2main">
-                <div className="form-group-2">
+          <div className="form-group-1main">
+                <div className="form-group1">
                   <label className="form-label">City:</label>
                   <input className="form-input" type="text" name="city" value={formData.city} onChange={handleChange} />
                 </div>
-                <div className="form-group-2">
+                <div className="form-group2">
                   <label className="form-label">State:</label>
                   <input className="form-input" type="text" name="state" value={formData.state} onChange={handleChange} />
                 </div>
-                <div className="form-group-2">
+          </div>
+          <div className="form-group-1main">
+                <div className="form-group1">
                   <label className="form-label">Zipcode:</label>
                   <input className="form-input" type="text" name="zipcode" value={formData.zipcode} onChange={handleChange} />
                 </div>
-          </div>
-          <div className="form-group-3main">
-                <div className="form-group-3">
-                <label className="form-label-30">Sale Type:</label>
-                <select className="form-input-70" type="text" name="sale_type" value={formData.sale_type} onChange={handleChange} >
-                <option value="For Rent">For Rent</option>
-                <option value="For Sale">For Sale</option>
-                </select>
-              </div>
-              <div className="form-group-3">
-                <label className="form-label-30">Price:</label>
-                <input className="form-input-70" type="text" name="price" value={formData.price} onChange={handleChange} />
-              </div>
-          </div>
-          <div className="form-group-3main">
-                <div className="form-group-3">
-                <label className="form-label-30">Bedrooms:</label>
-                <input className="form-input-70" type="text" name="bedrooms" value={formData.bedrooms} onChange={handleChange} />
-              </div>
-              <div className="form-group-3">
-                <label className="form-label-30">Bathrooms:</label>
-                <input className="form-input-70" type="text" name="bathrooms" value={formData.bathrooms} onChange={handleChange} />
-              </div>
-          </div>
-          <div className="form-group-2main">
-                <div className="form-group-2">
-                  <label className="form-label"> Home Type:</label>
-                  <select className="form-input" type="text" name="home_type" value={formData.home_type} onChange={handleChange} >
-                      <option value="House">House</option>
-                      <option value="Condo">Condo</option>
-                      <option value="Townhouse">Townhouse</option>
-                  </select>
-                </div>
-                <div className="form-group-2">
-                  <label className="form-label">Sqft:</label>
-                  <input className="form-input" type="text" name="sqft" value={formData.sqft} onChange={handleChange} />
-                </div>
-                <div className="form-group-2">
-                  <label className="form-label"> Open House:</label>
-                  <select className="form-input" type="text" name="open_house" value={formData.open_house} onChange={handleChange} >
-                      <option value={false}>False</option>
-                      <option value={true}>True</option>
-                  </select>
+                <div className="form-group2">
+                  <label className="form-label">Price:</label>
+                  <input className="form-input" type="text" name="price" value={formData.price} onChange={handleChange} />
                 </div>
           </div>
-          
-          
-          <div className="photo-groupmain">
-
-                 <div className="photo-group">
-                    <div className="form-group">
+          <div className="form-group-1main">
+                <div className="form-group1">
+                    <label className="form-label">Bedrooms:</label>
+                    <input className="form-input" type="text" name="bedrooms" value={formData.bedrooms} onChange={handleChange} />
+                </div>
+                <div className="form-group2">
+                    <label className="form-label">Bathrooms:</label>
+                    <input className="form-input" type="text" name="bathrooms" value={formData.bathrooms} onChange={handleChange} />
+                </div>
+          </div>
+          <div className="form-group-1main">
+                <div className="form-group1">
+                    <label className="form-label">Sqft:</label>
+                    <input className="form-input" type="text" name="sqft" value={formData.sqft} onChange={handleChange} />
+                </div>
+                {/* <div className="form-group2">
+                    <label className="form-label">Sale Type:</label>
+                    <select className="form-input" type="text" name="sale_type" value={formData.sale_type} onChange={handleChange} >
+                        <option value="For Rent">For Rent</option>
+                        <option value="For Sale">For Sale</option>
+                    </select>
+                </div> */}
+          </div>
+          <div className="form-group-1main">
+                <div className="form-group2">
+                    <label className="form-label">Sale Type:</label>
+                    <select className="form-input" type="text" name="sale_type" value={formData.sale_type} onChange={handleChange} >
+                        <option value="For Rent">For Rent</option>
+                        <option value="For Sale">For Sale</option>
+                    </select>
+                </div>
+                <div className="form-group1">
+                    <label className="form-label"> Home Type:</label>
+                    <select className="form-input" type="text" name="home_type" value={formData.home_type} onChange={handleChange} >
+                        <option value="House">House</option>
+                        <option value="Condo">Condo</option>
+                        <option value="Townhouse">Townhouse</option>
+                    </select>
+                </div>
+                <div className="form-group2">
+                    <label className="form-label"> Open House:</label>
+                    <select className="form-input" type="text" name="open_house" value={formData.open_house} onChange={handleChange} >
+                        <option value={false}>False</option>
+                        <option value={true}>True</option>
+                    </select>
+                </div>
+          </div>
+          <div className="form-group-1main">
+                <div className="form-group1">
                     <label className="form-label">Cover Photo:</label>
                     <input className="form-input" type="file" name="photo_main"  onChange={handleFileChange} />
-                    </div>
-                    <div className="form-group">
+                </div>
+                <div className="form-group2">
+                      <label className="form-label">Photo 1:</label>
+                      <input className="form-input" type="file" name="photo_1"  onChange={handleFileChange} />
+                </div>
+                <div className="form-group1">
                       <label className="form-label">Photo 2:</label>
                       <input className="form-input" type="file" name="photo_2"  onChange={handleFileChange} />
-                    </div>
-                    <div className="form-group">
-                      <label className="form-label">Photo 4:</label>
-                      <input className="form-input" type="file" name="photo_4"  onChange={handleFileChange} />
-                    </div>
-                </div>
-
-
-                <div className="photo-group">
-                      <div className="form-group">
-                        <label className="form-label">Photo 1:</label>
-                        <input className="form-input" type="file" name="photo_1"  onChange={handleFileChange} />
-                      </div>
-                      <div className="form-group">
-                        <label className="form-label">Photo 3:</label>
-                        <input className="form-input" type="file" name="photo_3"  onChange={handleFileChange} />
-                      </div>
-                      <div className="form-group">
-                        <label className="form-label">Photo 5:</label>
-                        <input className="form-input" type="file" name="photo_5"  onChange={handleFileChange} />
-                      </div>
                 </div>
           </div>
-
+          <div className="form-group-1main">
+                <div className="form-group2">
+                      <label className="form-label">Photo 3:</label>
+                      <input className="form-input" type="file" name="photo_3"  onChange={handleFileChange} />
+                </div>
+                <div className="form-group1">
+                      <label className="form-label">Photo 4:</label>
+                      <input className="form-input" type="file" name="photo_4"  onChange={handleFileChange} />
+                </div>
+                <div className="form-group2">
+                      <label className="form-label">Photo 5:</label>
+                      <input className="form-input" type="file" name="photo_5"  onChange={handleFileChange} />
+                </div>
+          </div>
+          {/* <div className="form-group-1main">
+                
+          </div> */}
           <div className="form-group-description">
             <label className="form-label-description">Description:</label>
             <textarea className="form-textarea-description" type="text" name="description" value={formData.description} onChange={handleChange} />
           </div>
           <div className="form-group-description">
-          <button className="form-submit" style={{width:"90%"}} type="submit">
+          <button className="form-submit" type="submit">
             Submit
           </button>
           </div>

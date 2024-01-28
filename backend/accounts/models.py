@@ -35,6 +35,7 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     photo = models.ImageField(upload_to='user_photos/', blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     is_active = models.BooleanField(default=True)
+    is_blocked = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
 
     objects = UserAccountManager()
@@ -51,55 +52,15 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.email
     
-    
-# class UserProfile(models.Model):
-#     user = models.OneToOneField(UserAccount, on_delete=models.CASCADE)
-#     name = models.CharField(max_length=255)  
-#     email = models.EmailField(max_length=255)
-#     phone = models.CharField(max_length=15, blank=True, null=True)
-#     age = models.PositiveIntegerField(blank=True, null=True)
-#     photo = models.ImageField(upload_to='user_photos/', blank=True, null=True)
-#     description = models.TextField(blank=True, null=True)
 
-#     def __str__(self):
-#         return f"{self.user.email}'s Profile"
-#     def save(self, *args, **kwargs):
-#         # Update corresponding UserAccount fields
-#         self.user.email = self.email
-#         self.user.name = self.name  
-#         self.user.save()
-#         super().save(*args, **kwargs)
+class Membership(models.Model):
+    class MembershipType(models.TextChoices):
+        NORMAL_USER = 'Normal User'
+        PREMIUM_USER = 'Premium User'
+        ULTRA_PREMIUM_USER = 'Ultra Premium User'
         
-        
-    # def save(self, *args, **kwargs):
-    #     # Call the parent class's save method
-    #     super().save(*args, **kwargs)
-
-    #     # Check if a corresponding Realtor instance already exists
-    #     if not hasattr(self, 'realtor'):
-    #         # Create a new Realtor instance linked to this UserProfile
-    #         Realtor.objects.create(
-    #             name=self.name,
-    #             email=self.email,
-    #             phone=self.phone,
-    #             description=self.description
-    #             # You may need to adjust the fields based on your requirements
-    #         )
+    member = models.ForeignKey(UserAccount, on_delete=models.DO_NOTHING,blank=True,null=True) 
+    membership_type = models.CharField(max_length = 50,choices =MembershipType.choices,default=MembershipType.NORMAL_USER) 
     
-    
-    
-    
-    
-# class UserToken(models.Model):
-#     email = models.EmailField(null=True)
-#     access_token = models.CharField(max_length=255,null=True)  # Adjust the max length as required
-    
-#     def __str__(self):
-#         return self.email
-
-# class AccessToken(models.Model):
-#     user = models.OneToOneField(UserAccount, on_delete=models.CASCADE)
-#     token = models.CharField(max_length=255)
-
-#     def __str__(self):
-#         return f"Token for {self.user.email}"
+    def __str__(self):
+        return f"{self.member} has the {self.membership_type}  Account"

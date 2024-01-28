@@ -5,6 +5,9 @@ export {default as ResidenciesPage} from './ResidenciesPage';
 export {default as SellPage} from './SellPage';
 export {default as ProfilePage} from './ProfilePage';
 export {default as DetailsPage} from './DetailsPage';
+export {default as MyPostPage} from './MyPostPage';
+export {default as NotificationPage} from './NotificationPage';
+export {default as MembershipPage} from './MembershipPage';
 export {default as NotFound} from './NotFound';
 
 

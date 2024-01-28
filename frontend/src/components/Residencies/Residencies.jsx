@@ -1,90 +1,20 @@
-// import React from "react";
+
 // import data from "../../utils/slider.json";
 // import { Swiper, SwiperSlide, useSwiper } from "swiper/react";
-// // Import Swiper styles
-// import "swiper/css";
-// import "./Residencies.css";
-// import { sliderSettings } from "../../utils/common";
-// const Residencies = () => {
-//   return (
-//     <div id="residencies" className="r-wrapper">
-//       <div className="paddings innerWidth r-container">
-//         <div className="flexColStart r-head">
-//           <span className="orangeText">Best Choices</span>
-//           <span className="primaryText">Popular Residencies</span>
-//         </div>
-//         <Swiper {...sliderSettings}>
-//           <SlideNextButton />
-//           {/* slider */}
-//           {data.map((card, i) => (
-//             <SwiperSlide key={i}>
-//               <div className="flexColStart r-card">
-//                 <img src={card.image} alt="home" />
-
-//                 <span className="secondaryText r-price">
-//                   <span style={{ color: "orange" }}>$</span>
-//                   <span>{card.price}</span>
-//                 </span>
-//                 <span className="primaryText">{card.name}</span>
-//                 <span className="secondaryText">{card.detail}</span>
-//               </div>
-//             </SwiperSlide>
-//           ))}
-//         </Swiper>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Residencies;
-
-// const SlideNextButton = () => {
-//   const swiper = useSwiper();
-//   return (
-//     <div className="flexCenter r-buttons">
-//       <button onClick={() => swiper.slidePrev()} className="r-prevButton">
-//         &lt;
-//       </button>
-//       <button onClick={() => swiper.slideNext()} className="r-nextButton">
-//         &gt;
-//       </button>
-//     </div>
-//   );
-// };
-
-
-// import data from "../../utils/slider.json";
-import { Swiper, SwiperSlide, useSwiper } from "swiper/react";
 import React, { useState, useEffect } from 'react';
 import { baseURL } from '../../api/api';
-import { useSelector} from "react-redux";
+// import { useSelector} from "react-redux";
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 // Import Swiper styles
 import "swiper/css";
 import "./Residencies.css";
-import { sliderSettings } from "../../utils/common";
+// import { sliderSettings } from "../../utils/common";
 const Residencies = () => {
 
   const [listings, setListings] = useState([]);
-  const admin = useSelector((state)=>state.admin);
-  console.log("Listingrrrrr",listings)
-  console.log("Adminrrrrr1",admin)
-//   useEffect(() => {
-//     axios.get(`${baseURL}listings/`,{
-//       headers: {
-//         Authorization: `Bearer ${admin.adminAccessToken}`,
-//       },
-//     })
-//         .then(response => {
-//             console.log("fffffffff",)
-//             setUsers(response.data);
-//             console.log("EEEEEEEE",)
-//         })
-//         .catch(error => {
-//             console.error('Error fetching user data:', error);
-//         });
-// }, []);
+  // console.log("Listingrrrrr",listings)
+ 
 
 useEffect(() => {
   const fetchData = async () => {
@@ -100,60 +30,46 @@ useEffect(() => {
   fetchData();
 }, []);
 console.log("FGDR",listings,"RRDDDFREEDDDF")
-console.log("card.id",listings.id)
+// console.log("card.id",listings.i)
+// console.log("Selected Element ID:", listings[0].id);
+// console.log("Selected Element slug:", listings[0].slug);
 
-
-
-
-// return (
-//   <div>
-//     <h1>Listings</h1>
-//     <ul>
-//       {listings.map((listing, index) => (
-//         <li key={index}>
-//           <p>Title: {listing.title}</p>
-//           <p>Address: {listing.address}</p>
-//           {/* Add other fields as needed */}
-//         </li>
-//       ))}
-//     </ul>
-//   </div>
-// );
-
-
-
-
+// const handleCardClick = (index) => {
+//   const selectedListing = listings.results[index];
+//   const { slug, id } = selectedListing;
+//   console.log('Selected Listing Slug:', slug);
+//   console.log('Selected Listing ID:', id);
+//   // Now you can use slug and id as needed (e.g., navigate to the detail page)
+// };
 
 return (
   <div id="residencies" className="r-wrapper">
-    <div className="paddings innerWidth r-container">
-      <div className="flexColStart r-head">
+    <div className="flexColStart r-head">
         <span className="orangeText">Best Choices</span>
         <span className="primaryText">Popular Residencies</span>
       </div>
-      <Swiper {...sliderSettings}>
-        <SlideNextButton />
-        {/* slider */}
-        {listings.results && listings.results.map((card, i) => (
-          <SwiperSlide key={i}>
-            {/* Wrap the card in a Link to navigate to the detail page */}
-            {/* to={`/residencies/detail/${card.id}`} */}
-            <Link to={`/residencies/detail/${card.id}`} className="r-card-link">
-              {/* {console.log("card.id",listings.id)} */}
-              <div className="flexColStart r-card">
-                <img src={card.photo_main} alt="home" />
+    <div className="paddings innerWidth r-container">
+      {/* <div className="flexColStart r-head">
+        <span className="orangeText">Best Choices</span>
+        <span className="primaryText">Popular Residencies</span>
+      </div> */}
+      {listings && listings.map((card, i) => (
+        // <div className="r-card-link" key={i} onClick={() => handleCardClick(i)}>
+          <Link to={`/residencies/detail/${card.slug}`} className="r-card-link">
+            {console.log("card.slug",card.slug)}
+            <div className="flexColStart r-card">
+              <img src={card.photo_main} alt="home" />
 
-                <span className="secondaryText r-price">
-                  <span style={{ color: 'orange' }}>$</span>
-                  <span>{card.price}</span>
-                </span>
-                <span className="primaryText">{card.title}</span>
-                <span className="secondaryText">{card.address}</span>
-              </div>
-            </Link>
-          </SwiperSlide>
-        ))}
-      </Swiper>
+              <span className="secondaryText r-price">
+                <span style={{ color: 'orange' }}>₹</span>
+                <span>{card.price}</span>
+              </span>
+              <span className="primaryText">{card.title}</span>
+              <span className="secondaryText">{card.address}</span>
+            </div>
+          </Link>
+        //  </div>
+      ))}
     </div>
   </div>
 );
@@ -161,17 +77,17 @@ return (
 
 export default Residencies;
 
-const SlideNextButton = () => {
-  const swiper = useSwiper();
-  return (
-    <div className="flexCenter r-buttons">
-      <button onClick={() => swiper.slidePrev()} className="r-prevButton">
-        &lt;
-      </button>
-      <button onClick={() => swiper.slideNext()} className="r-nextButton">
-        &gt;
-      </button>
-    </div>
-  );
-};
+// const SlideNextButton = () => {
+//   const swiper = useSwiper();
+//   return (
+//     <div className="flexCenter r-buttons">
+//       <button onClick={() => swiper.slidePrev()} className="r-prevButton">
+//         &lt;
+//       </button>
+//       <button onClick={() => swiper.slideNext()} className="r-nextButton">
+//         &gt;
+//       </button>
+//     </div>
+//   );
+// };
 

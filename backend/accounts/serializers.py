@@ -1,3 +1,4 @@
+import os
 from rest_framework import serializers
 from .models import UserAccount
 
@@ -18,7 +19,19 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserAccount
         fields = ['id','email', 'name', 'phone', 'age', 'photo', 'description']
-        
+    def validate_post_img(self, value):
+        max_size = 1.5 * 1024 * 1024  # 1.5 MB in bytes
+
+        if value.size > max_size:
+            raise serializers.ValidationError('The image size should not exceed 1.5 MB.')
+
+        valid_extensions = ['.jpg', '.jpeg', '.png', '.svg']
+        ext = os.path.splitext(value.name)[1].lower()
+
+        if ext not in valid_extensions:
+            raise serializers.ValidationError('Invalid image file type. Supported formats: jpg, jpeg, png, svg.')
+
+        return value
     # def create(self, validated_data):
     #     # Extract the 'user' from the context to associate it with the profile
     #     user = self.context['request'].user

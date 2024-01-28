@@ -72,7 +72,8 @@ class LoginView(APIView):
         # print(email,password,"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")
         user = authenticate(email=email, password=password)
         # print(email,password,"CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC")
-
+        # if user.is_active == False:
+        #     return Response({"Blocked" : "This account is blocked!!"}, status=status.HTTP_404_NOT_FOUND)
         if user is not None:
             # print(user,"DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD")
             if user.is_active:
@@ -161,7 +162,11 @@ class UserProfileView(APIView):
 
     def put(self, request):
         user_profile = request.user
+        print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$",user_profile)
+        print("$$$$$$$$$$$$$$$$$&&&&&&&&&&",request.data)
         serializer = UserProfileSerializer(user_profile, data=request.data)
+        print("###########################",serializer)
+        print("###########################",serializer.is_valid())
         if serializer.is_valid():
             serializer.save()
             return Response({'message': 'Profile updated successfully', 'data': serializer.data})

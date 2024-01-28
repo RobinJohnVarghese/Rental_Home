@@ -8,12 +8,20 @@ from accounts.models import UserAccount
 from .serializers import ListingSerializer, listingDetailSerializer,CreatelistingSerializer
 from datetime import datetime, timezone, timedelta
 from rest_framework import generics
+from rest_framework.pagination import PageNumberPagination
+
+class NoPagination(PageNumberPagination):
+    page_size=None
 
 class ListingsView(ListAPIView):
     queryset = Listing.objects.order_by('-list_date').filter(is_published=True)
+    # print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  queryset",queryset)
     permission_classes = (permissions.AllowAny, )
     serializer_class = ListingSerializer
     lookup_field = 'slug'
+    pagination_class = NoPagination
+    
+    
 
 class ListingView(RetrieveAPIView):
     queryset = Listing.objects.order_by('-list_date').filter(is_published=True)
@@ -197,22 +205,7 @@ class SearchView(APIView):
 from rest_framework.decorators import api_view,authentication_classes, permission_classes
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-   
-# @api_view(['POST'])
-# # @authentication_classes([TokenAuthentication])  # Use appropriate authentication class
-# # @permission_classes([IsAuthenticated])
-# def Create_Listing(request):
-#     print("******************************************")
-#     if request.method == 'POST':
-#         print("++++++++++++++++++++++++++++++++++++++++",request.data)
-#         serializer = CreatelistingSerializer(data=request.data)
-#         print("++++++++++++++++++++++++++++++++++++++++",serializer)
 
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     
 class CreateListing(APIView):
@@ -241,49 +234,4 @@ class CreateListing(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-        
-    #     print("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT", request.data)
-    #     # request.data['realtor'] = {'email': request.data['realtor']}
-    #     serializer = self.serializer_class(data=request.data)
-    #     print("++++++++++++++++++++++++++++++++++++++++", serializer.is_valid)
-    #     serializer.is_valid(raise_exception=True)
-    #     self.perform_create(serializer)
-    #     headers = self.get_success_headers(serializer.data)
-    #     return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
-    # # Implement the perform_create method to save the listing
-    # def perform_create(self, serializer):
-    #     serializer.save(realtor=self.request.user)
-    
-# from rest_framework.authentication import TokenAuthentication
-# from rest_framework.permissions import IsAuthenticated   
-    
-    
-# class CreateListing(APIView):
-#     # def create_listing(request):
-#     #     token = request.auth
-        
-#     # authentication_classes = [TokenAuthentication]
-#     permission_classes = (permissions.AllowAny, )
-#     serializer_class = CreatelistingSerializer
-#     # print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-#     def post(self, request, *args, **kwargs):
-#         token = request.auth
-#         # print(f"++++++++++++++++Received token++++++++++: {token}")
-#         data = request.data.copy()
-        
-#         # Handle image uploads separately
-#         image_serializer = ListingImageSerializer(data=data)
-#         if image_serializer.is_valid():
-#             # print("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")
-#             # Process the image here, e.g., save to the model or temporary storage
-#             data['photo_main'] = image_serializer.validated_data['image']
-        
-#         serializer = CreatelistingSerializer(data=data)
-#         if serializer.is_valid():
-#             # print("CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC")
-#             serializer.save()
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-#         # print('DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD')
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+ 

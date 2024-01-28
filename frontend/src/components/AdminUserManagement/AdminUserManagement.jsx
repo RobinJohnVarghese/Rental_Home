@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, Button } from 'react-bootstrap';
+// import { Table, Button } from 'react-bootstrap';
 // import {useNavigate} from 'react-router-dom';
 // import AdminNavbar from '../Navbar/AdminNavbar';
-import {MDBBtn,} from 'mdb-react-ui-kit';
+// import {MDBBtn,} from 'mdb-react-ui-kit';
 import { baseURL } from '../../api/api';
 import { useSelector} from "react-redux";
 
@@ -58,10 +58,10 @@ const UserList = () => {
 
     
 
-    const handleBlockUnblock = async (userId, isactive) => {
+    const handleBlockUnblock = async (userId, is_active) => {
       console.log('USERID',userId)
         try {
-          const url = `${baseURL}admin-side/users/${userId}/${isactive ? 'unblock' : 'block'}/`;
+          const url = `${baseURL}admin-side/users/${userId}/${is_active ? 'unblock' : 'block'}/`;
           const response = await fetch(url, {
             method: 'POST',
             headers: {
@@ -71,7 +71,7 @@ const UserList = () => {
           });
       
           if (!response.ok) {
-            throw new Error(`Failed to ${isactive ? 'unblock' : 'block'} user.`);
+            throw new Error(`Failed to ${is_active ? 'unblock' : 'block'} user.`);
             
           }
           
@@ -79,7 +79,7 @@ const UserList = () => {
           setUsers(prevUsers => {
             return prevUsers.map(user => {
               if (user.id === userId) {
-                return { ...user, isactive: !isactive };
+                return { ...user, is_active: !is_active };
               }
               return user;
             });
@@ -140,7 +140,7 @@ const UserList = () => {
                 cursor: 'pointer',
               }}
             >
-              {user.is_active ? 'Block' : 'Unblock'}
+              {user.is_active ? 'UnBlock' : 'Block'}
             </button>
           </td>
         </tr>

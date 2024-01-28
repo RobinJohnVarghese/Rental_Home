@@ -1,5 +1,10 @@
 /* Profile.css */
 
+.r-containers {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
 
 .profile-card {
     display: flex;

@@ -4,7 +4,6 @@ import { useSelector, } from "react-redux";
 import axios from 'axios';
 import { baseURL,imageBaseUrl } from '../../api/api';
 import Cookies from 'js-cookie';
-// import default_profile.jpg from frontend/public
 
 
 function Profile() {
@@ -21,6 +20,8 @@ function Profile() {
     description: '',
     profilePicture: null,
   });
+  const [selectedFileName, setSelectedFileName] = useState('');
+  const [selectedFile,setSelectedFile] =useState(null)
 
   useEffect(() => {
     // Fetch user profile data when the component mounts
@@ -69,13 +70,31 @@ function Profile() {
     }));
   };
   
-  const handleImageChange = (event) => {
-    const { name, files } = event.target;
-    setProfile((prevProfile) => ({
-      ...prevProfile,
-      [name]: files[0],  // Assuming a single file is expected
-    }));
-  };
+  // const handleImageChange = (event) => {
+  //   const { name, files } = event.target;
+  //   setProfile((prevProfile) => ({
+  //     ...prevProfile,
+  //     [name]: files[0],  // Assuming a single file is expected
+  //   }));
+  // };
+
+  const handleFileChange = (event) => {
+    const formData = new FormData();
+    formData.append('photo', selectedFile);
+    console.log('Selected file:', selectedFile);
+
+    const file = event.target.files[0];
+    console.log('Selected event.target.files[0]:',event.target.files[0]);
+    // Update selected file
+    setSelectedFile(file);
+
+    // Update selected file name
+    setSelectedFileName(file ? file.name : '');
+
+    // Now you can do something with the selected file, like saving it to local storage
+    console.log('Selected file:',file);
+    
+};
   
 
 
@@ -85,8 +104,8 @@ function Profile() {
       
   
       const formData = new FormData();
-      console.log("%%%%%%%%%%% form Data",formData)
-      console.log("Profile state:", profile);
+      // console.log("%%%%%%%%%%% form Data",formData)
+      // console.log("Profile state:", profile);
 
       // Append the updated fields to the form data
       formData.append('name', profile.name);
@@ -95,10 +114,13 @@ function Profile() {
       formData.append('age', profile.age || '');
       formData.append('description', profile.description || '');
   
-      if (profile.profilePicture) {
-        formData.append('profilePicture', profile.profilePicture);
+      // if (profile.profilePicture) {
+        // formData.append('photo', selectedFile );
+      // }
+      if (selectedFile) {
+        formData.append('photo', selectedFile, selectedFile.name);
       }
-     
+      console.log("&&&&&&& selectedFile.name",selectedFile.name)
       console.log("&&&&&&&&&&&&& form Data",formData)
       // Check if the user already has a profile (PUT) or not (POST)
       
@@ -108,12 +130,12 @@ function Profile() {
       {
         headers: {
           Accept: 'application/json',
-          'Content-Type' :'application/json',
+          'Content-Type' :'multipart/form-data',
           Authorization: `Bearer ${user.accessToken}`, 
         },
       }
     );
-    console.log("EWEWEWEFWEWEWEWEWE profile picture",formData.profilePicture)
+    console.log("EWEWEWEFWEWEWEWEWE profile picture",formData)
   
       console.log('Profile updated successfully:', response.data);
       setSuccessMessage('Profile updated successfully');
@@ -171,13 +193,18 @@ function Profile() {
 
   return (
     <div id="profile" className="r-wrapper clearfix">
-      <div className="paddings innerWidth flexCenter r-container">
+      <div className="paddings innerWidth flexCenter r-containers">
         <div className="flexColStart r-head">
           <div className="form-container">
             <div className="profile-card">
               <div className="profile-picture">
+                
                 <img
-                  src={profile.profilePicture ? `${imageBaseUrl}${profile.profilePicture}` : "https://via.placeholder.com/150"}
+                  src={selectedFile
+                    ? URL.createObjectURL(selectedFile)
+                    : profile.profilePicture
+                    ? `${imageBaseUrl}${profile.profilePicture}`
+                    : "https://via.placeholder.com/150"}
                   alt="Profile"
                   className="img-fluid"
                 />
@@ -238,8 +265,10 @@ function Profile() {
                   id="profilePicture"
                   name="profilePicture"
                   accept="image/*"
-                  onChange={handleImageChange}
+                  onChange={handleFileChange}
                 />
+                {selectedFileName && (<p>Selected File: {selectedFileName}</p>)}
+                
 
                 <div className="edit-button-container">
                   

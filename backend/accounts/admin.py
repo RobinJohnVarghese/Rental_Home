@@ -2,7 +2,7 @@
 
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import UserAccount,Membership
+from .models import UserAccount,Membership,Order
 
 # Register your UserAccount model with UserAdmin
 @admin.register(UserAccount)
@@ -30,4 +30,30 @@ class CustomUserAdmin(UserAdmin):
 
     # Set the ordering of objects in the admin panel
     ordering = ('is_staff','email',)
-admin.site.register(Membership)
+    
+class MembershipAdmin(admin.ModelAdmin):
+    list_display = ('id', 'member', 'membership_type')
+    list_display_links = ('id', 'member')
+    list_per_page = 25
+
+admin.site.register(Membership, MembershipAdmin)
+
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ('id', 'order_person', 'order_amount','order_payment_id','isPaid','order_date')
+    list_display_links = ('id', 'order_person')
+    # list_editable = ('isPaid',)
+    list_per_page = 25
+
+admin.site.register(Order, OrderAdmin)
+
+
+# class ChatMessageAdmin(admin.ModelAdmin):
+#     list_editable = ['is_read', 'message']
+#     list_display = ['id','user','sender', 'reciever', 'is_read', 'message','date']
+#     list_display_links = ('id', 'user')
+# admin.site.register( ChatMessage,ChatMessageAdmin) 
+
+
+# admin.site.register(Membership)
+
+# admin.site.register(Order)

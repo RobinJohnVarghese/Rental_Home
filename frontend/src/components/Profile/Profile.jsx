@@ -4,11 +4,18 @@ import { useSelector, } from "react-redux";
 import axios from 'axios';
 import { baseURL,imageBaseUrl } from '../../api/api';
 import Cookies from 'js-cookie';
+import {
+  MDBContainer,
+  MDBCard,
+  MDBCardBody,
+} from 'mdb-react-ui-kit';
+
+
 
 
 function Profile() {
   const user = useSelector((state)=>state.user);
-  // console.log("+++++ user ",user.data)
+  console.log("+++++ user ",user.user)
   const [editMode, setEditMode] = useState(false);
   // console.log("%%%%%%%%%%%%%%%%%%%%%",editMode)
   const [successMessage, setSuccessMessage] = useState('');
@@ -18,7 +25,7 @@ function Profile() {
     phone: "",
     age: '',
     description: '',
-    profilePicture: null,
+    profilePicture: "null",
   });
   const [selectedFileName, setSelectedFileName] = useState('');
   const [selectedFile,setSelectedFile] =useState(null)
@@ -102,29 +109,17 @@ function Profile() {
     try {
       console.log("************* Entered to try ***********************")
       
-  
       const formData = new FormData();
-      // console.log("%%%%%%%%%%% form Data",formData)
-      // console.log("Profile state:", profile);
-
-      // Append the updated fields to the form data
       formData.append('name', profile.name);
       formData.append('email', profile.email);
       formData.append('phone', profile.phone || '');
       formData.append('age', profile.age || '');
       formData.append('description', profile.description || '');
   
-      // if (profile.profilePicture) {
-        // formData.append('photo', selectedFile );
-      // }
       if (selectedFile) {
         formData.append('photo', selectedFile, selectedFile.name);
       }
-      console.log("&&&&&&& selectedFile.name",selectedFile.name)
-      console.log("&&&&&&&&&&&&& form Data",formData)
-      // Check if the user already has a profile (PUT) or not (POST)
       
-  
       // Make the API request
       const response = await axios.put(`${baseURL}accounts/user_profile`,formData, 
       {
@@ -192,9 +187,23 @@ function Profile() {
 
 
   return (
+    <MDBContainer fluid style={{padding:"0"}}>
+        <div className="p-5 bg-image"style={{backgroundImage:'url(https://mdbootstrap.com/img/new/textures/full/175.jpg)',height: '1200px', 
+                      backgroundSize: 'cover', 
+                      backgroundRepeat: 'no-repeat' }}>
+            <div style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        minHeight: '100vh',
+                    }}>
+    <MDBCard className=' mx-5 mb-5  p-5 shadow-5 w-50'style={{background: 'hsla(0, 0%, 100%, 0.8)',backdropFilter: 'blur(30px)',height: "1000px",}}>
+    <MDBCardBody className='p-5 text-center'>
+
+
     <div id="profile" className="r-wrapper clearfix">
       <div className="paddings innerWidth flexCenter r-containers">
-        <div className="flexColStart r-head">
+        {/* <div className="flexColStart r-head"> */}
           <div className="form-container">
             <div className="profile-card">
               <div className="profile-picture">
@@ -282,9 +291,15 @@ function Profile() {
               </form>
             
           </div>
-        </div>
+        {/* </div> */}
       </div>
     </div>
+
+    </MDBCardBody>
+        </MDBCard>
+        </div>
+        </div>
+    </MDBContainer>
   );
 }
 

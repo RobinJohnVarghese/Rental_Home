@@ -12,9 +12,12 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+from decouple import config
 from datetime import timedelta
 from rest_framework.authentication import TokenAuthentication
+# from dotenv import load_dotenv
 
+# load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,10 +27,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-5^2sg_$1*whs70+j1kj1*1ozxp9787_zq&)b5#clrs(2@&&h1s'
+# SECRET_KEY =config('SECRET_KEY'),
+SECRET_KEY="django-insecure-5^2sg_$1*whs70+j1kj1*1ozxp9787_zq&)b5#clrs(2@&&h1s"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG =config('DEBUG', default=False, cast=bool),
 
 ALLOWED_HOSTS = []
 
@@ -35,6 +39,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -47,13 +53,19 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'accounts',
     'admin_side',
-    'realtors',
+    # 'realtors',
     'listings',
-    'contacts',
-    'notification',
-    
+    # 'contacts',
+    # 'notification',
+    # 'chatroom',
     
 ]
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -85,6 +97,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'rental_home.wsgi.application'
+ASGI_APPLICATION = "rental_home.asgi.application"
 
 
 # Database
@@ -93,12 +106,16 @@ WSGI_APPLICATION = 'rental_home.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE':'django.db.backends.mysql',
+        # 'NAME':config('NAME'),
+        # 'USER':config('USER'), 
+		# 'PASSWORD': config('PASSWORD'),
         'NAME':'rental_home',
-        'USER':'root', 
-		'PASSWORD': 'Robin@123',
+        'USER':'root',
+        'PASSWORD':'Robin@123',
 		'HOST':'localhost',
  		'PORT':'3306',
     }
+
 }
 # DATABASES = {
 #     'default': {
@@ -107,13 +124,13 @@ DATABASES = {
 #     }
 # }
 
-EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST='smtp.gmail.com'
-EMAIL_FROM='robinvarghesejohn1998@gmail.com'
-EMAIL_HOST_USER='robinvarghesejohn1998@gmail.com'
-EMAIL_HOST_PASSWORD='nxltoewxopwjarph'
-EMAIL_PORT=587
-EMAIL_USE_TLS=True
+EMAIL_BACKEND=config("EMAIL_BACKEND")
+EMAIL_HOST=config("EMAIL_HOST")
+EMAIL_FROM=config("EMAIL_FROM")
+EMAIL_HOST_USER=config("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD=config("EMAIL_HOST_PASSWORD")
+EMAIL_PORT=config("EMAIL_PORT")
+EMAIL_USE_TLS=config('EMAIL_USE_TLS', default=True, cast=bool)
 
 
 # Password validation
@@ -166,17 +183,22 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
+# REST_FRAMEWORK = {
+#     'DEFAULT_PERMISSION_CLASSES': [
         
-        'rest_framework.permissions.IsAuthenticated'
-    ],
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-        'rest_framework_simplejwt.authentication.JWTAuthentication'
-    ],
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 3
+#         'rest_framework.permissions.IsAuthenticated'
+#     ],
+#     'DEFAULT_AUTHENTICATION_CLASSES': [
+#         # 'rest_framework.authentication.TokenAuthentication',
+#         'rest_framework_simplejwt.authentication.JWTAuthentication'
+#     ],
+#     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+#     'PAGE_SIZE': 3
+# }
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
 }
 
 
@@ -232,3 +254,9 @@ SIMPLE_JWT = {
   'AUTH_COOKIE_PATH': '/',        # The path of the auth cookie.
   'AUTH_COOKIE_SAMESITE': 'Lax',  # Whether to set the flag restricting cookie leaks on cross-site requests. This can be 'Lax', 'Strict', or None to disable the flag.
 }
+
+
+
+#Razorpay
+RAZORPAY_KEY_ID=config("RAZORPAY_KEY_ID")
+RAZORPAY_KEY_SECRET=config("RAZORPAY_KEY_SECRET")

@@ -1,7 +1,7 @@
 import React from 'react'
 import {BrowserRouter as Router,Route, Routes} from "react-router-dom"
 import { HomePage, LoginPage, SignUpPage, ResidenciesPage, SellPage, ProfilePage,DetailsPage,MyPostPage ,NotificationPage ,MembershipPage , NotFound
-  ,AdminHomePage,AdminLoginPage, AdminUserManagementPage, AdminPostManagementPage } from './pages';
+  ,AdminHomePage,AdminLoginPage, AdminUserManagementPage, AdminPostManagementPage,MyPostDetailPage,SearchDataPage,MessageDetailsPage,MessagePage } from './pages';
 import "./App.css";
 import { AdminUserManagement } from './components';
 
@@ -18,8 +18,12 @@ function App() {
             <Route path="/sell" element={<SellPage/>}/>
             <Route path="/profile" element={<ProfilePage/>}/>
             <Route path="/my-posts" element={<MyPostPage/>}/>
+            <Route path="/my-posts-detail/:slug" element={<MyPostDetailPage/>}/>
             <Route path="/notifications" element={<NotificationPage/>}/>
             <Route path="/membership" element={<MembershipPage/>}/>
+            <Route path="/searchdatapage" element={<SearchDataPage/>}/>
+            <Route path="/message" element={<MessagePage/>}/>
+            <Route path="/messagedetails/:id" element={<MessageDetailsPage/>}/>
 
 
             <Route path="/admin" element={<AdminHomePage/>}/>

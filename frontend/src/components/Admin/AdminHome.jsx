@@ -1,6 +1,6 @@
 import React, { useEffect , useState} from 'react'
 import { Grid, Paper, Typography } from '@mui/material';
-import { sliderSettings } from "../../utils/common";
+// import { sliderSettings } from "../../utils/common";
 import { Swiper, SwiperSlide, useSwiper } from "swiper/react";
 
 
@@ -14,7 +14,7 @@ function AdminHome() {
       try {
         const url = 'https://newsapi.org/v2/everything?' +
           'q=Apple&' +
-          'from=2024-01-01&' +
+          'from=2024-02-01&' +
           'sortBy=popularity&' +
           'apiKey=97966ca9479c49ce8522fd179603b55c';
 
@@ -56,9 +56,9 @@ function AdminHome() {
               Global News
             </Typography>
             <div  style={{ height: '300px', backgroundColor: '#e8dada',padding:'5px' }}>
-            <Swiper {...sliderSettings}>
+            <Swiper >
               <SlideNextButton onPrev={handlePrevSlide} onNext={handleNextSlide} />
-              {/* <SwiperSlide > */}
+            
               <div key={currentArticleIndex}>
                 <div className='headline'><h2>{articles[currentArticleIndex]?.title}</h2></div>
                 
@@ -70,15 +70,8 @@ function AdminHome() {
                 <h4>{articles[currentArticleIndex]?.description}</h4>
                 </div>
                 
-                {/* <a
-                  href={articles[currentArticleIndex]?.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Read more
-                </a> */}
               </div>
-                  {/* </SwiperSlide> */}
+               
             </Swiper>
 
 

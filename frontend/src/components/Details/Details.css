@@ -51,21 +51,31 @@
         }
     } */
 
+.row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    }
+
 .listingdetail__displaymain{
-        width: 50%;
+        width: 100%;
         
         }
 
 .listingdetail__displaymain__image{
-            width: 100%;
+            width: 50%;
         }
+
+.listingdetail__displaymain__image:hover {
+            transform: scale(1.01); /* Adjust the scale factor as needed */
+          }
 
 .listingdetail__display{
         width: 100%;
         }
 
 .listingdetail__display__image{
-            width: 100%;
+            width: 50%;
         }
 
 .images{

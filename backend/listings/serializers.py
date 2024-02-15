@@ -1,6 +1,8 @@
 from rest_framework import serializers
-from .models import Listing
+from .models import Listing,Notifications,ChatMessage
 from accounts.models import UserAccount
+from accounts.serializers import UserProfileSerializer
+
 class ListingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Listing
@@ -12,43 +14,83 @@ class listingDetailSerializer(serializers.ModelSerializer):
         fields = '__all__'
         lookup_field = 'slug'
         
-# class RealtorNameSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = UserAccount
-#         fields = ['id']
-        
+
+
 class CreatelistingSerializer(serializers.ModelSerializer):
-    # realtor = RealtorNameSerializer()
     realtor_id = serializers.IntegerField(write_only=True, required=False)
+    realtor = serializers.PrimaryKeyRelatedField(read_only=True)
+
     class Meta:
         model = Listing
-        fields = ['realtor_id','realtor','slug','title','address','city','state','zipcode',
-                'description','sale_type','price','bedrooms','bathrooms','home_type',
-                'sqft','open_house','photo_main','photo_1','photo_2','photo_3',
-                'photo_4','photo_5']
+        fields = ['realtor_id', 'realtor', 'slug', 'title', 'address', 'city', 'state', 'zipcode',
+                  'description', 'sale_type', 'price', 'bedrooms', 'bathrooms', 'home_type',
+                  'sqft', 'open_house', 'photo_main', 'photo_1', 'photo_2', 'photo_3',
+                  'photo_4', 'photo_5']
         read_only_fields = ['realtor']
-        
+
     def create(self, validated_data):
-        
         realtor_id = validated_data.pop('realtor_id', None)
-        if realtor_id:
+        
+        if realtor_id is not None:
             try:
                 realtor = UserAccount.objects.get(id=realtor_id)
                 validated_data['realtor'] = realtor
             except UserAccount.DoesNotExist:
-                raise serializers.ValidationError({'realtor_id': 'realtor not found.'})
-        # # Check for null values before setting photo fields
-        # for photo_field in ['photo_1', 'photo_2', 'photo_3', 'photo_4', 'photo_5']:
-        #     if photo_field in validated_data and validated_data[photo_field] is None:
-        #         del validated_data[photo_field]
-                
+                raise serializers.ValidationError({'realtor_id': 'Realtor with the provided ID does not exist.'})
+
         return super().create(validated_data)
 
+class NotificationsSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Notifications
+        fields = ['fromuser', 'touser', 'intrested_post', 'send_time', 'is_seen']
 
-# # If you want to handle image uploads, you can create a separate serializer for the images
-# class ListingImageSerializer(serializers.Serializer):
-#     image = serializers.ImageField()
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['fromuser'] = instance.fromuser.id  # Replace 'username' with the actual field you want to display
+        representation['touser'] = instance.touser.id  # Replace 'username' with the actual field you want to display
+        representation['intrested_post'] = instance.intrested_post.id  # Replace 'title' with the actual field you want to display
+        return representation
+    
+    
+class UserInterestsSerializer(serializers.ModelSerializer):
+    fromuser_name = serializers.CharField(source='fromuser.get_full_name', read_only=True)
+    fromuser_email = serializers.EmailField(source='fromuser.email', read_only=True)
+    intrested_post_title = serializers.CharField(source='intrested_post.title', read_only=True)
+    intrested_post_slug = serializers.CharField(source='intrested_post.slug', read_only=True)
 
-# # You may also use a nested serializer for handling multiple images
-# class ListingImagesSerializer(serializers.Serializer):
-#     images = serializers.ListField(child=serializers.ImageField())
+    class Meta:
+        model = Notifications
+        fields = ['id','fromuser_name', 'fromuser_email', 'intrested_post_title', 'intrested_post_slug', 'send_time', 'is_seen']
+        
+        
+class MarkNotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notifications
+        fields = '__all__'
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = UserAccount
+        fields = ['id', 'name', 'email', 'phone', 'age', 'photo', 'description']
+
+    
+    def __init__(self, *args, **kwargs):
+        super(ProfileSerializer, self).__init__(*args, **kwargs)
+        request = self.context.get('request')
+        if request and request.method=='POST':
+            self.Meta.depth = 0
+        else:
+            self.Meta.depth = 3       
+        
+class MessageSerializer(serializers.ModelSerializer):
+    reciever_profile = ProfileSerializer(read_only=True)
+    sender_profile = ProfileSerializer(read_only=True)
+
+    class Meta:
+        model = ChatMessage
+        fields = ['id','sender', 'reciever','reciever_profile','sender_profile','message', 'is_read', 'date']
+    

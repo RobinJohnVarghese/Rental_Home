@@ -30,17 +30,6 @@ useEffect(() => {
   fetchData();
 }, []);
 console.log("FGDR",listings,"RRDDDFREEDDDF")
-// console.log("card.id",listings.i)
-// console.log("Selected Element ID:", listings[0].id);
-// console.log("Selected Element slug:", listings[0].slug);
-
-// const handleCardClick = (index) => {
-//   const selectedListing = listings.results[index];
-//   const { slug, id } = selectedListing;
-//   console.log('Selected Listing Slug:', slug);
-//   console.log('Selected Listing ID:', id);
-//   // Now you can use slug and id as needed (e.g., navigate to the detail page)
-// };
 
 return (
   <div id="residencies" className="r-wrapper">

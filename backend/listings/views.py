@@ -1,14 +1,21 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView,UpdateAPIView,DestroyAPIView
 from rest_framework import permissions
 from rest_framework import status
-from .models import Listing
+from .models import Listing,Notifications,ChatMessage
+from .serializers import ListingSerializer, listingDetailSerializer,CreatelistingSerializer,NotificationsSerializer,UserInterestsSerializer,MarkNotificationSerializer,MessageSerializer,ProfileSerializer
 from accounts.models import UserAccount
-from .serializers import ListingSerializer, listingDetailSerializer,CreatelistingSerializer
+from accounts.serializers import UserProfileSerializer
 from datetime import datetime, timezone, timedelta
 from rest_framework import generics
 from rest_framework.pagination import PageNumberPagination
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
+from django.db.models import OuterRef, Subquery
+from django.db.models import Q
+
+
 
 class NoPagination(PageNumberPagination):
     page_size=None
@@ -27,9 +34,16 @@ class ListingView(RetrieveAPIView):
     queryset = Listing.objects.order_by('-list_date').filter(is_published=True)
     serializer_class = listingDetailSerializer
     lookup_field = 'slug'
-
+    
+class UserListingView(ListAPIView):
+    serializer_class = ListingSerializer
+    pagination_class = NoPagination
+    def get_queryset(self):
+        realtor_id = self.kwargs.get('realtor_id')
+        return Listing.objects.filter(realtor__id=realtor_id, is_published=True)
+    
 class SearchView(APIView):
-    permission_classes = (permissions.AllowAny, )
+    # permission_classes = (permissions.AllowAny, )
     serializer_class = ListingSerializer
 
     def post(self, request, format=None):
@@ -209,11 +223,7 @@ from rest_framework.permissions import IsAuthenticated
     
     
 class CreateListing(APIView):
-   
-    # serializer_class = CreatelistingSerializer
-    
-    # def post(self, request, format=None, *args, **kwargs):
-        
+
     def post(self, request, *args, **kwargs):
         print(request.data)
         # Extract realtor from the request data
@@ -227,11 +237,250 @@ class CreateListing(APIView):
             return Response({'error': 'realtor not found'}, status=status.HTTP_404_NOT_FOUND)
 
         # Associate the service with the realtor
-        request.data['realtor'] = realtor.id
-
+        request.data['realtor'] = int(realtor.id)
+        print('****request.data[realtor]****', request.data['realtor'])
         serializer = CreatelistingSerializer(data=request.data)
+        print('****serializer****', serializer)
+        print('****serializer.is_valid()****', serializer.is_valid())
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    # def put(self, request, pk, format=None):
+    #     listing = request.data.get(pk)
+    #     print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$",listing)
+    #     serializer = CreatelistingSerializer(listing, data=request.data)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response(serializer.data)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # def delete(self, request, pk, format=None):
+    #     listing = self.get_object(pk)
+    #     listing.delete()
+    #     return Response(status=status.HTTP_204_NO_CONTENT)
+    
+class ListingUpdateView(UpdateAPIView):
+    queryset = Listing.objects.all()  # Assuming you want to update all listings
+    serializer_class = listingDetailSerializer
+    lookup_field = 'slug'
+    
+class ListingDeleteView(DestroyAPIView):
+    queryset = Listing.objects.all()  
+    serializer_class = listingDetailSerializer
+    lookup_field = 'slug'
+
+
+# class ListingSearchView(ListAPIView):
+#     queryset = Listing.objects.all()
+#     serializer_class = ListingSerializer
+
+#     def get_queryset(self):
+#         queryset = super().get_queryset()
+        
+#         # Get search query parameters from the request
+#         title = self.request.GET.get('title')
+#         address = self.request.GET.get('address')
+#         city = self.request.GET.get('city')
+#         state = self.request.GET.get('state')
+#         # price = self.request.GET.get('price')
+
+#         # Filter queryset based on search parameters
+#         if title:
+#             queryset = queryset.filter(title__icontains=title)
+#         if address:
+#             queryset = queryset.filter(address__icontains=address)
+#         if city:
+#             queryset = queryset.filter(city__icontains=city)
+#         if state:
+#             queryset = queryset.filter(state__icontains=state)
+#         # if price:
+#         #     queryset = queryset.filter(price=price)
+#         print('$$$$$$$$$$$$queryset',queryset)
+#         # serializer= ListingSerializer(queryset)
+#         return queryset
+#         # return Response({ 'data': serializer.data}, status=200)
+
+
+
+class ListingSearchView(APIView):
+    serializer_class = ListingSerializer
+
+    def get(self, request, *args, **kwargs):
+        # Get search query parameters from the request
+        title = self.request.GET.get('title')
+        address = self.request.GET.get('address')
+        city = self.request.GET.get('city')
+        state = self.request.GET.get('state')
+        # price = self.request.GET.get('price')
+
+        # Filter queryset based on search parameters
+        queryset = Listing.objects.all()
+        if title:
+            queryset = queryset.filter(title__icontains=title)
+        if address:
+            queryset = queryset.filter(address__icontains=address)
+        if city:
+            queryset = queryset.filter(city__icontains=city)
+        if state:
+            queryset = queryset.filter(state__icontains=state)
+        # if price:
+        #     queryset = queryset.filter(price=price)  # Adjust as per your price field type
+
+        # Serialize queryset to list of dictionaries
+        serializer = ListingSerializer(queryset, many=True)
+        data = serializer.data
+        
+        return Response(data)
+
+
+
+# class CreateListing(APIView):
+
+#     def post(self, request, *args, **kwargs):
+#         print(request.data)
+#         # Extract realtor from the request data
+#         realtor_id = request.data.get('realtor_id')
+#         print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$',realtor_id)
+#         # Ensure that the realtor is valid
+#         try:
+#             realtor = UserAccount.objects.get(id=realtor_id)
+#             print('*realtor*', realtor)
+#         except UserAccount.DoesNotExist:
+#             return Response({'error': 'realtor not found'}, status=status.HTTP_404_NOT_FOUND)
+
+#         # Associate the service with the realtor
+#         mutable_data = request.data.copy()  # Create a mutable copy of request.data
+#         mutable_data['realtor'] = realtor.id  # Assign the realtor.id to the 'realtor' key
+#         print('*mutable_data[realtor]*', mutable_data['realtor'])
+
+#         serializer = CreatelistingSerializer(data=mutable_data)
+#         print('*serializer*', serializer)
+#         print('*serializer.is_valid()*', serializer.is_valid())
+#         if serializer.is_valid():
+
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
  
+
+
+class Send_interest(APIView):
+    def post(self, request):
+        fromuser_id = request.data.get('fromuser')
+        touser_id = request.data.get('touser')  # Adjust this based on your request data
+        intrested_post_id = request.data.get('postid')  # Adjust this based on your request data
+
+        # Retrieve user instances and post instance
+        fromuser = get_object_or_404(UserAccount, id=fromuser_id)
+        touser = get_object_or_404(UserAccount, id=touser_id)
+        intrested_post = get_object_or_404(Listing, id=intrested_post_id)
+
+        # Check if the notification already exists
+        existing_notification = Notifications.objects.filter(fromuser=fromuser, touser=touser, intrested_post=intrested_post).exists()
+
+        if not existing_notification:
+            # Create and save a new notification
+            notification = Notifications(fromuser=fromuser, touser=touser, intrested_post=intrested_post)
+            notification.save()
+
+            # Serialize the notification and return the response
+            serializer = NotificationsSerializer(notification)
+            return Response({'message': 'Interest sent successfully', 'data': serializer.data}, status=200)
+        else:
+            return Response({'message': 'Interest already sent'}, status=400)
+        
+
+
+class UserInterestsView(ListAPIView):
+    serializer_class = UserInterestsSerializer
+    pagination_class = NoPagination
+
+    def get_queryset(self):
+        # Retrieve the logged-in user
+        logged_in_user = self.request.user
+
+        # Filter the queryset based on the logged-in user
+        queryset = Notifications.objects.filter(touser=logged_in_user,is_seen=False)
+        
+        # If is_seen is False, filter out notifications with is_seen=True
+    
+
+        # Retrieve additional information for each notification
+        for notification in queryset:
+            # Retrieve fromuser's name and email
+            fromuser_name = notification.fromuser.get_full_name()
+            fromuser_email = notification.fromuser.email
+            # Retrieve intrested_post's title and slug
+            intrested_post_title = notification.intrested_post.title
+            intrested_post_slug = notification.intrested_post.slug
+
+            # Add additional fields to the notification instance
+            notification.fromuser_name = fromuser_name
+            notification.fromuser_email = fromuser_email
+            notification.intrested_post_title = intrested_post_title
+            notification.intrested_post_slug = intrested_post_slug
+            
+        
+            # print("((((()))))",notification.fromuser_name,notification.fromuser_email,notification.intrested_post_title,notification.intrested_post_slug)
+        # print("queryset",queryset)
+        return queryset
+
+
+class MarkNotificationAsSeen(APIView):
+    # authentication_classes = [TokenAuthentication]
+    def post(self, request, pk,format=None):
+        try:
+            notification = Notifications.objects.get(pk=pk)
+        except Notifications.DoesNotExist:
+            return Response({"message": "Notification not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        notification.is_seen = True
+        notification.save()
+
+        serializer = MarkNotificationSerializer(notification)
+        return Response(serializer.data)
+    
+    
+class MyInbox(generics.ListAPIView):
+    serializer_class = MessageSerializer
+
+    def get_queryset(self):
+        user_id = self.kwargs['user_id']
+
+        messages = ChatMessage.objects.filter(
+            id__in =  Subquery(
+                UserAccount.objects.filter(
+                    Q(sender__reciever=user_id) |
+                    Q(reciever__sender=user_id)
+                ).distinct().annotate(
+                    last_msg=Subquery(
+                        ChatMessage.objects.filter(
+                            Q(sender=OuterRef('id'),reciever=user_id) |
+                            Q(reciever=OuterRef('id'),sender=user_id)
+                        ).order_by('-id')[:1].values_list('id',flat=True) 
+                    )
+                ).values_list('last_msg', flat=True).order_by("-id")
+            )
+        ).order_by("-id")
+            
+        return messages
+    
+class GetMessages(generics.ListAPIView):
+    serializer_class = MessageSerializer
+    
+    def get_queryset(self):
+        sender_id = self.kwargs['sender_id']
+        reciever_id = self.kwargs['reciever_id']
+        messages =  ChatMessage.objects.filter(sender__in=[sender_id, reciever_id], reciever__in=[sender_id, reciever_id])
+        return messages
+    
+class SendMessages(generics.CreateAPIView):
+    serializer_class = MessageSerializer
+    
+class ProfileDetail(generics.RetrieveUpdateAPIView):
+    serializer_class = ProfileSerializer
+    queryset = UserAccount.objects.all()
+    permission_classes = [IsAuthenticated]
+    

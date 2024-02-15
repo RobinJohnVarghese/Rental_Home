@@ -1,5 +1,5 @@
 import { Navigate  } from 'react-router-dom';
-import { Header,Residencies} from '../components';
+import { Header,MyPost} from '../components';
 import { useSelector} from "react-redux";
 
 function MyPostPage(isAuthenticated) {
@@ -9,7 +9,7 @@ function MyPostPage(isAuthenticated) {
       return (
         <div>
           <Header />
-          <Residencies />
+          <MyPost />
         </div>
       );
     }else{

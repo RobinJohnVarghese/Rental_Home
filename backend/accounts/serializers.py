@@ -1,6 +1,6 @@
 import os
 from rest_framework import serializers
-from .models import UserAccount
+from .models import UserAccount,Order
 
 
 
@@ -32,13 +32,25 @@ class UserProfileSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Invalid image file type. Supported formats: jpg, jpeg, png, svg.')
 
         return value
-    # def create(self, validated_data):
-    #     # Extract the 'user' from the context to associate it with the profile
-    #     user = self.context['request'].user
+    
+    
+# class UserProfileUpdateSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = UserAccount
+#         fields = ['id','email', 'name', 'phone', 'age', 'photo', 'description']  # Include all fields including photo
 
-    #     # Remove 'user' from the validated_data, as it's not a model field
-    #     validated_data.pop('user', None)
+#     def update(self, instance, validated_data):
+#         # Exclude 'photo' from validated_data if it is present but None
+#         if 'photo' in validated_data and validated_data['photo'] is None:
+#             del validated_data['photo']
 
-    #     # Create a new profile for the user
-    #     profile = UserAccount.objects.create(email=user.email, name=user.name, **validated_data)
-    #     return profile
+#         return super().update(instance, validated_data)
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    order_date = serializers.DateTimeField(format="%d %B %Y %I:%M %p")
+
+    class Meta:
+        model = Order
+        fields = '__all__'
+        depth = 2

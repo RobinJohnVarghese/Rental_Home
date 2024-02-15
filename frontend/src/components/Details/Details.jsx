@@ -5,18 +5,36 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { baseURL } from '../../api/api';
 import { useSelector, } from "react-redux";
-// import { Link } from 'react-router-dom';
 import "./Details.css";
+import {
+    MDBContainer,
+    MDBCard,
+    MDBCardBody,
+    MDBTable, 
+    MDBTableHead,
+    MDBTableBody,
+    MDBCol,
+    MDBRow,
+    MDBInput,
+    MDBTextArea,
+  } from 'mdb-react-ui-kit';
+
 
 
 const Details = (props) => {
   const user = useSelector((state)=>state.user);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [showErrorMessage, setShowErrorMessage] = useState(false);
   // const { slug, id } = useParams();
   const param = useParams();
   const slug =param.slug
-  console.log("ETETETTTTTTTTTTTTTTTTTTTTT",slug)
+  
+//   console.log("ETETETTTTTTTTTTTTTTTTTTTTT",slug)
+  
   const [listing, setListing] = useState(null);
-
+//   console.log("#########################from user",user.user.id)
+//   console.log("#########################To user",listing.realtor)
+//   console.log("#########################listing.id",listing.id)
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -27,6 +45,7 @@ const Details = (props) => {
         );
         const detaildata = response.data;
         console.log("//////////////", response.data);
+        // console.log("$$$$$$$$$$$$$$$$",response.data.id)
         setListing(response.data);
       } catch (error) {
         console.error('Error fetching listing detail:', error);
@@ -38,6 +57,33 @@ const Details = (props) => {
   if (!listing) {
     return <div>Loading...</div>;
   }
+
+
+  const handleSubmit = async () => {
+    try {
+      const fromuser = user.user.id;
+      const touser = listing.realtor;
+      const postid = listing.id;
+      console.log("**********************",fromuser,touser,postid)
+      const response = await axios.post(
+        `${baseURL}listings/send_interest/`,
+        { fromuser, touser, postid },
+        {
+          headers: {
+            Authorization: `Bearer ${user.accessToken}`,
+            Accept: 'application/json',
+          },
+        }
+      );
+      setShowSuccessMessage(true);
+      console.log('Interest sent successfully', response.data);
+      // You can handle success or update the UI as needed
+    } catch (error) {
+      setShowErrorMessage(true);
+      console.error('Error sending interest:', error);
+      // You can handle errors or show an error message
+    }
+  };
 
 
 
@@ -100,46 +146,45 @@ return images;
 
   return (
 
+    <MDBContainer fluid style={{padding:"0"}}>
+        <div className="p-5 bg-image"style={{backgroundImage:'url(https://mdbootstrap.com/img/new/textures/full/175.jpg)',height: '100%px', 
+                      backgroundSize: 'cover', 
+                      backgroundRepeat: 'no-repeat' }}>
+            <div style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        minHeight: '100vh',
+                    }}>
+    <MDBCard className=' mx-5 mb-5  p-5 shadow-5 'style={{background: 'hsla(0, 0%, 100%, 0.8)',backdropFilter: 'blur(30px)',height: "fit-content",}}>
+    <MDBCardBody className='p-5 text-center' style={{width:"100%"}}>
   <div className='listingdetail'>
-            {/* <Helmet>
-                <title>Realest Estate - Listing | {`${listing.title}`}</title>
-                <meta
-                    name='description'
-                    content='Listing detail'
-                />
-            </Helmet> */}
             <div className='listingdetail__header'>
                 <h1 className='listingdetail__title'>{listing.title}</h1>
                 <p className='listingdetail__location'>{listing.city}, {listing.state}, {listing.zipcode}</p>
             </div>
-            {/* <div className='row'>
-                <div className='listingdetail__breadcrumb'>
-                    <Link className='listingdetail__breadcrumb__link' to='/'>Home</Link> / {listing.title}
-                </div>
-            </div> */}
             <div className='intrestsection'>
-                <button className='intrestbutton'>
-                    Send an Intrest
-                </button>
+            {showSuccessMessage && (<div style={{ color: 'green' }}>Interest sent successfully!</div>)}
+            {showErrorMessage && (<div style={{ color: 'red' }}>Interest already sent!</div>)}
+                
+            </div>
+            <div className='intrestsection'>
+                {user.user.id !== listing.realtor && (
+                    <button className='intrestbutton' onClick={handleSubmit}>
+                    Send an Interest
+                    </button>
+                )}
+                {user.user.id === listing.realtor && (
+                    <p className='intrestbutton__message'>
+                    You can't make an interest because you are the seller.
+                    </p>
+                )}
             </div>
             <div className='row'>
-                <div className='col-3-of-4' style={{ alignItems: "center", textAlign: "center" ,marginLeft:"33%"}}>
-                    <div className='listingdetail__displaymain'>
-                        <img className='listingdetail__displaymain__image' src={listing.photo_main} alt='' />
-                    </div>
-                </div>
-                {/* <div className='col-1-of-4'>
-                    <div className='listingdetail__display'>
-                        <img className='listingdetail__display__image' src={realtor.photo} alt='' />
-                    </div>
-                    <h3 className='listingdetail__realtor'>{realtor.name}</h3>
-                    <p className='listingdetail__contact'>{realtor.phone}</p>
-                    <p className='listingdetail__contact'>{realtor.email}</p>
-                    <p className='listingdetail__about'>{realtor.description}</p>
-                </div> */}
+                <img className='listingdetail__displaymain__image' src={listing.photo_main} alt='' />  
             </div>
-            <div className='row'>
-                <div className='col-1-of-2' >
+            <div >
+                {/* <div className='col-1-of-2' >
                     <ul className='listingdetail__list' style={{display:"flex" , justifyContent:"space-evenly"}}>
                         <li className='listingdetail__list__item'>Home Type: {listing.home_type}</li>
                         <li className='listingdetail__list__item'>Price: ₹{listing.price}</li>
@@ -156,15 +201,61 @@ return images;
                         <li className='listingdetail__list__item'>State: {listing.state}</li>
                         <li className='listingdetail__list__item'>Zipcode: {listing.zipcode}</li>
                     </ul>
-                </div>
+                </div> */}
+                <div className='row'>
+                <p className='listingdetail__description' style={{ textAlign:"center"}}>Details</p>
             </div>
+            <MDBTable hover>
+            <MDBTableBody>
+                <tr>
+                <th scope='row'>Home Type</th>
+                <td>{listing.home_type}</td>
+                <th scope='row'>Sale Type</th>
+                <td>{listing.sale_type}</td>
+                </tr>
+                <tr>
+                <th scope='row'>Price</th>
+                <td>₹{listing.price}</td>
+                <th scope='row'>Square Feet</th>
+                <td>{listing.sqft}ft</td>
+                </tr>
+                <tr>
+                <th scope='row'>Bedrooms</th>
+                {/* <td colSpan={2}>Larry the Bird</td> */}
+                <td>{listing.bedrooms}</td>
+                <th scope='row'>Bathrooms</th>
+                <td>{listing.bathrooms}</td>
+                </tr>
+                <tr>
+                <th scope='row'>Address and Zipcode</th>
+                <td colSpan={2}>{listing.address}</td>
+                {/* <td>{listing.city}</td>
+                <td>{listing.state}</td> */}
+                <td >{listing.zipcode}</td>
+                </tr>
+                <tr>
+                <th scope='row'>City</th>
+                {/* <td colSpan={2}>Larry the Bird</td> */}
+                <td>{listing.city}</td>
+                <th scope='row'>State</th>
+                <td>{listing.state}</td>
+                </tr>
+            </MDBTableBody>
+            </MDBTable>
             <div className='row'>
-                <p className='listingdetail__description' style={{ textAlign:"center"}}>{listing.description}</p>
+                <p className='listingdetail__description' style={{ textAlign:"center",fontSize:"medium"}}>{listing.description}</p>
             </div>
+            </div>
+            
             
             {displayInteriorImages()}
             
         </div>
+        </MDBCardBody>
+        </MDBCard>
+        </div>
+        </div>
+    </MDBContainer>
     );
 };
 export default Details;

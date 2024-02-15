@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Listing,Notifications
+from .models import Listing,Notifications,ChatMessage
 
 class ListingAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'is_published', 'price', 'list_date', 'realtor')
@@ -11,4 +11,15 @@ class ListingAdmin(admin.ModelAdmin):
 
 admin.site.register(Listing, ListingAdmin)
 
-admin.site.register(Notifications)
+
+class NotificationsAdmin(admin.ModelAdmin):
+    list_editable = ['is_seen']
+    list_display = ['id','fromuser','touser', 'intrested_post', 'is_seen', 'send_time']
+    list_display_links = ('id', 'fromuser')
+admin.site.register(Notifications,NotificationsAdmin)
+
+class ChatMessageAdmin(admin.ModelAdmin):
+    list_editable = ['is_read', 'message']
+    list_display = ['id','sender', 'reciever', 'is_read', 'message','date']
+    list_display_links = ('id','sender', 'reciever', )
+admin.site.register( ChatMessage,ChatMessageAdmin)

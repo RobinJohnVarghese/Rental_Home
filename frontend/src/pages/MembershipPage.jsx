@@ -1,5 +1,5 @@
 import { Navigate  } from 'react-router-dom';
-import { Header,Residencies,} from '../components';
+import { Header,Membership,} from '../components';
 import { useSelector} from "react-redux";
 
 function MembershipPage(isAuthenticated) {
@@ -9,7 +9,7 @@ function MembershipPage(isAuthenticated) {
       return (
         <div>
           <Header />
-          <Residencies />
+          <Membership/>
           
         </div>
       );

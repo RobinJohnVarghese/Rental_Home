@@ -1,8 +1,9 @@
 // import { Navigate  } from 'react-router-dom';
 // import { Header,Details,Footer} from '../components';
 // import { useSelector} from "react-redux";
-import Header from '../components/Header/Header';
-import Details from '../components/Details/Details';
+// import Header from '../components/Header/Header';
+// import Details from '../components/Details/Details';
+import { Header,Details} from '../components';
 import { useSelector} from "react-redux";
 import { Navigate  } from 'react-router-dom';
 

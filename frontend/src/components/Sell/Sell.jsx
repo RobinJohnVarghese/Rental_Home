@@ -3,6 +3,7 @@ import axios from 'axios';
 import { baseURL } from '../../api/api';
 import { useSelector, } from "react-redux";
 import  './Sell.css'
+import {useNavigate} from 'react-router-dom'
 import {
   MDBBtn,
   MDBContainer,
@@ -22,6 +23,19 @@ import {
 const Sell = () => {
   const user = useSelector((state)=>state.user);
   console.log("################ User",user.user.id)
+  // const navigator = useNavigate();
+  const [successMessage, setSuccessMessage] = useState('');
+  const [slugError, setSlugError] = useState('');
+  const [titleError, setTitleError] = useState('');
+  const [addressError, setAddressError] = useState('');
+  const [cityError, setCityError] = useState('');
+  const [stateError, setStateError] = useState('');
+  const [zipcodeError, setZipcodeError] = useState('');
+  const [priceError, setPriceError] = useState('');
+  const [bedroomsError, setBedroomsError] = useState('');
+  const [bathroomsError, setBathroomsError] = useState('');
+  const [sqftError, setSqftError] = useState('');
+  const [photomainError, setPhotomainError] = useState('');
   const [formData, setFormData] = useState({
     realtor_id: user.user.id,
     slug: '',
@@ -67,15 +81,82 @@ const Sell = () => {
   };
 
   const handleSubmit = async (e) => {
-    // e.preventDefault();
+    e.preventDefault();
   
     try {
-      // Validate that all required fields are filled
-      if (!formData.title || !formData.address || !formData.slug || !formData.city || !formData.state 
-        || !formData.zipcode || !formData.bedrooms || !formData.bathrooms || !formData.photo_main  ) {
-        console.error("Please fill in all required fields");
-        return;
+      // Validation for slug
+    if (!formData.slug || formData.slug.trim() === '' || formData.slug.length > 25) {
+      setSlugError('Slug is required and should be less than 25 characters', 'error');
+      return;
       }
+
+    if (!formData.title || formData.title.trim() === '' || formData.title.length > 25) {
+      setTitleError('Title is required and should be less than 25 characters', 'error');
+      return;
+      }
+    
+    if (!formData.address || formData.address.trim() === '' || formData.address.length > 25) {
+      setAddressError('Address is required and should be less than 25 characters', 'error');
+      return;
+      }
+
+    if (!formData.city || formData.city.trim() === '' || formData.city.length > 25) {
+      setCityError('city is required and should be less than 25 characters', 'error');
+      return;
+      }
+
+    if (!formData.state || formData.state.trim() === '' || formData.state.length > 25) {
+      setStateError('state is required and should be less than 25 characters', 'error');
+      return;
+      }
+
+    if (!formData.zipcode || formData.zipcode.trim() === '' || !/^\d{1,7}$/.test(formData.zipcode)) {
+      setZipcodeError("Zipcode is required and should contain only numbers with a maximum length of 7 digits");
+      return;
+    }
+
+    if (!formData.price || formData.price.trim() === '' || !/^\d{1,8}$/.test(formData.price)) {
+      setPriceError("price is required and should contain only numbers with a maximum length of 8 digits");
+      return;
+      }
+
+    if (!formData.bedrooms || formData.bedrooms.trim() === '') {
+      setBedroomsError("Bedrooms is required");
+      return;
+    }
+    const bedrooms = parseInt(formData.bedrooms);
+    if (isNaN(bedrooms) || bedrooms >= 10) {
+      setBedroomsError("Bedrooms should be a valid integer less than 10");
+      return;
+    }
+
+    if (!formData.bathrooms || formData.bathrooms.trim() === '') {
+      setBathroomsError("Bathrooms is required");
+      return;
+    }
+    const bathrooms = parseInt(formData.bathrooms);
+    if (isNaN(bathrooms) || bathrooms >= 10) {
+      setBathroomsError("Bathrooms should be a valid integer less than 10");
+      return;
+    }
+
+    if (!formData.sqft || formData.sqft.trim() === '' || !/^\d{1,5}$/.test(formData.sqft)) {
+      setSqftError('bathrooms is required and should contain only numbers with a maximum length of 5 digits');
+      return;
+      }
+
+    if (!formData.photo_main ) {
+      setPhotomainError('photo main is required');
+      return;
+      }
+
+      // Validate that all required fields are filled
+      // if (!formData.title || !formData.address || !formData.slug || !formData.city || !formData.state 
+      //   || !formData.zipcode || !formData.bedrooms || !formData.bathrooms || !formData.photo_main  ) {
+      //   // setEmptyError("Please fill in all required fields");
+      //   console.error("Please fill in all required fields");
+      //   return;
+      // }
   
       // Create a FormData object to send the data including files
       const formDataToSend = new FormData();
@@ -85,7 +166,7 @@ const Sell = () => {
       });
       console.log("&&&&&&&&&&&&& form Data",formDataToSend)
       // Make a POST request to your backend API
-      const response = axios.post(`${baseURL}listings/create_listing/`,formDataToSend, {
+      const response = await axios.post(`${baseURL}listings/create_listing/`,formDataToSend, {
         
         headers: {
           Accept: 'application/json',
@@ -99,10 +180,27 @@ const Sell = () => {
   
       if (response.status === 201) {
         console.log('Form data sent successfully');
+        // Show success message for 5 seconds
+      setSuccessMessage('Form data sent successfully');
+      setTimeout(() => {
+        setSuccessMessage('');
+      }, 3000);
+
+      // Clear all form fields
+      setFormData({realtor_id: '',slug: '',title: '',address: '',city: '',
+        state: '',zipcode: '',description: '',sale_type: 'For Rent',price: '',
+        bedrooms: '',bathrooms: '',home_type: 'House',sqft: '',open_house: false,
+        photo_main: null,photo_1: "",photo_2: "",photo_3: "",photo_4: "",
+        photo_5: "",is_published: true,list_date: new Date().toISOString(),});
+
+      // Redirect to the "residencies" page
+      setTimeout(() => {
         window.location.href = '/residencies';
-      } else {
-        console.error('Error sending form data to the backend');
-      }
+      }, 3000);
+            // navigator('/residencies');
+          } else {
+            console.error('Error sending form data to the backend');
+          }
     } catch (error) {
       console.error('An error occurred during form submission:', error);
     }
@@ -110,145 +208,6 @@ const Sell = () => {
   
 
   return (
-    
-    // <div className="form-containerouter">
-    //   <div className="form-containerinner">
-    //     <h1 className="form-title">Create New Post</h1>
-    //     <form onSubmit={handleSubmit} className="form">
-    //       <div className="form-group-1main">
-    //           <div className="form-group1">
-    //               <label className="form-label">Realtor:</label>
-    //               <input className="form-input" type="text" name="realtor_id" value={user.user.id} onChange={handleChange} readOnly/>
-    //           </div>
-    //           <div className="form-group2">
-    //               <label className="form-label">Slug:</label>
-    //               <input className="form-input" type="text" name="slug" value={formData.slug} onChange={handleChange} />
-    //           </div>
-    //       </div>
-    //       <div className="form-group-1main">
-    //             <div className="form-group1">
-    //                 <label className="form-label">Title:</label>
-    //                 <input className="form-input" type="text" name="title" value={formData.title} onChange={handleChange} />
-    //             </div>
-    //             <div className="form-group2">
-    //                 <label className="form-label">Address:</label>
-    //                 <input className="form-input" type="text" name="address" value={formData.address} onChange={handleChange} />
-    //             </div>
-    //       </div>
-    //       <div className="form-group-1main">
-    //             <div className="form-group1">
-    //               <label className="form-label">City:</label>
-    //               <input className="form-input" type="text" name="city" value={formData.city} onChange={handleChange} />
-    //             </div>
-    //             <div className="form-group2">
-    //               <label className="form-label">State:</label>
-    //               <input className="form-input" type="text" name="state" value={formData.state} onChange={handleChange} />
-    //             </div>
-    //       </div>
-    //       <div className="form-group-1main">
-    //             <div className="form-group1">
-    //               <label className="form-label">Zipcode:</label>
-    //               <input className="form-input" type="text" name="zipcode" value={formData.zipcode} onChange={handleChange} />
-    //             </div>
-    //             <div className="form-group2">
-    //               <label className="form-label">Price:</label>
-    //               <input className="form-input" type="text" name="price" value={formData.price} onChange={handleChange} />
-    //             </div>
-    //       </div>
-    //       <div className="form-group-1main">
-    //             <div className="form-group1">
-    //                 <label className="form-label">Bedrooms:</label>
-    //                 <input className="form-input" type="text" name="bedrooms" value={formData.bedrooms} onChange={handleChange} />
-    //             </div>
-    //             <div className="form-group2">
-    //                 <label className="form-label">Bathrooms:</label>
-    //                 <input className="form-input" type="text" name="bathrooms" value={formData.bathrooms} onChange={handleChange} />
-    //             </div>
-    //       </div>
-    //       <div className="form-group-1main">
-    //             <div className="form-group1">
-    //                 <label className="form-label">Sqft:</label>
-    //                 <input className="form-input" type="text" name="sqft" value={formData.sqft} onChange={handleChange} />
-    //             </div>
-    //             {/* <div className="form-group2">
-    //                 <label className="form-label">Sale Type:</label>
-    //                 <select className="form-input" type="text" name="sale_type" value={formData.sale_type} onChange={handleChange} >
-    //                     <option value="For Rent">For Rent</option>
-    //                     <option value="For Sale">For Sale</option>
-    //                 </select>
-    //             </div> */}
-    //       </div>
-          // <div className="form-group-1main">
-          //       <div className="form-group2">
-          //           <label className="form-label">Sale Type:</label>
-          //           <select className="form-input" type="text" name="sale_type" value={formData.sale_type} onChange={handleChange} >
-          //               <option value="For Rent">For Rent</option>
-          //               <option value="For Sale">For Sale</option>
-          //           </select>
-          //       </div>
-          //       <div className="form-group1">
-          //           <label className="form-label"> Home Type:</label>
-          //           <select className="form-input" type="text" name="home_type" value={formData.home_type} onChange={handleChange} >
-          //               <option value="House">House</option>
-          //               <option value="Condo">Condo</option>
-          //               <option value="Townhouse">Townhouse</option>
-          //           </select>
-          //       </div>
-          //       <div className="form-group2">
-          //           <label className="form-label"> Open House:</label>
-          //           <select className="form-input" type="text" name="open_house" value={formData.open_house} onChange={handleChange} >
-          //               <option value={false}>False</option>
-          //               <option value={true}>True</option>
-          //           </select>
-          //       </div>
-          // </div>
-    //       <div className="form-group-1main">
-    //             <div className="form-group1">
-    //                 <label className="form-label">Cover Photo:</label>
-    //                 <input className="form-input" type="file" name="photo_main"  onChange={handleFileChange} />
-    //             </div>
-    //             <div className="form-group2">
-    //                   <label className="form-label">Photo 1:</label>
-    //                   <input className="form-input" type="file" name="photo_1"  onChange={handleFileChange} />
-    //             </div>
-    //             <div className="form-group1">
-    //                   <label className="form-label">Photo 2:</label>
-    //                   <input className="form-input" type="file" name="photo_2"  onChange={handleFileChange} />
-    //             </div>
-    //       </div>
-    //       <div className="form-group-1main">
-    //             <div className="form-group2">
-    //                   <label className="form-label">Photo 3:</label>
-    //                   <input className="form-input" type="file" name="photo_3"  onChange={handleFileChange} />
-    //             </div>
-    //             <div className="form-group1">
-    //                   <label className="form-label">Photo 4:</label>
-    //                   <input className="form-input" type="file" name="photo_4"  onChange={handleFileChange} />
-    //             </div>
-    //             <div className="form-group2">
-    //                   <label className="form-label">Photo 5:</label>
-    //                   <input className="form-input" type="file" name="photo_5"  onChange={handleFileChange} />
-    //             </div>
-    //       </div>
-    //       {/* <div className="form-group-1main">
-                
-    //       </div> */}
-    //       <div className="form-group-description">
-    //         <label className="form-label-description">Description:</label>
-    //         <textarea className="form-textarea-description" type="text" name="description" value={formData.description} onChange={handleChange} />
-    //       </div>
-    //       <div className="form-group-description">
-    //       <button className="form-submit" type="submit">
-    //         Submit
-    //       </button>
-    //       </div>
-    //     </form>
-    //   </div>
-    // </div>
-
-
-
-
 
     <MDBContainer fluid style={{padding:"0"}}>
         <div className="p-5 bg-image"style={{backgroundImage:'url(https://mdbootstrap.com/img/new/textures/full/171.jpg)',height: '1500px', 
@@ -264,6 +223,7 @@ const Sell = () => {
             {/* <form onSubmit={handleSubmit}> */}
                 <MDBCardBody className='p-5 text-center'>
                     <h2 className='fw-bold mb-5'>Create New Post</h2>
+                    {successMessage && (<div className="alert alert-success" role="alert">{successMessage}</div>)}
                     <MDBRow>
                         <MDBCol col='6'>
                             <MDBInput
@@ -286,6 +246,8 @@ const Sell = () => {
                               value={formData.slug}
                               onChange={handleChange}
                             />
+                          {slugError && <p className={'error-message'}>{slugError}</p>}
+
                         </MDBCol>
                     </MDBRow>
 
@@ -299,6 +261,7 @@ const Sell = () => {
                               value={formData.title}
                               onChange={handleChange}
                             />
+                            {titleError && <p className={'error-message'}>{titleError}</p>}
                         </MDBCol>
 
                         <MDBCol col='6'>
@@ -310,6 +273,7 @@ const Sell = () => {
                               value={formData.address}
                               onChange={handleChange}
                             />
+                          {addressError && <p className={'error-message'}>{addressError}</p>}
                         </MDBCol>
                     </MDBRow>
 
@@ -323,6 +287,7 @@ const Sell = () => {
                               value={formData.city}
                               onChange={handleChange}
                             />
+                            {cityError && <p className={'error-message'}>{cityError}</p>}
                         </MDBCol>
 
                         <MDBCol col='6'>
@@ -334,6 +299,7 @@ const Sell = () => {
                               value={formData.state}
                               onChange={handleChange}
                             />
+                            {stateError && <p className={'error-message'}>{stateError}</p>}
                         </MDBCol>
                     </MDBRow>
 
@@ -347,6 +313,7 @@ const Sell = () => {
                               value={formData.zipcode}
                               onChange={handleChange}
                             />
+                            {zipcodeError && <p className={'error-message'}>{zipcodeError}</p>}
                         </MDBCol>
 
                         <MDBCol col='6'>
@@ -358,6 +325,7 @@ const Sell = () => {
                               value={formData.price}
                               onChange={handleChange}
                             />
+                            {priceError && <p className={'error-message'}>{priceError}</p>}
                         </MDBCol>
                     </MDBRow>
 
@@ -371,6 +339,7 @@ const Sell = () => {
                               value={formData.bedrooms}
                               onChange={handleChange}
                             />
+                            {bedroomsError && <p className={'error-message'}>{bedroomsError}</p>}
                         </MDBCol>
 
                         <MDBCol col='6'>
@@ -382,6 +351,7 @@ const Sell = () => {
                               value={formData.bathrooms}
                               onChange={handleChange}
                             />
+                            {bathroomsError && <p className={'error-message'}>{bathroomsError}</p>}
                         </MDBCol>
                     </MDBRow>
 
@@ -395,6 +365,7 @@ const Sell = () => {
                               value={formData.sqft}
                               onChange={handleChange}
                             />
+                            {sqftError && <p className={'error-message'}>{sqftError}</p>}
                         </MDBCol>
 
                         <MDBCol col='6'>
@@ -456,6 +427,7 @@ const Sell = () => {
                             accept='image/*'
                             onChange={handleFileChange}
                           />
+                          {photomainError && <p className={'error-message'}>{photomainError}</p>}
                         </MDBCol>
 
                         <MDBCol col='6'>
@@ -529,7 +501,7 @@ const Sell = () => {
                           />
                         </MDBCol>
                     </MDBRow>
-
+                  {successMessage && (<div className="alert alert-success" role="alert">{successMessage}</div>)}
                     <MDBBtn
                       className='w-100 mb-4'
                       style={{marginTop:"15px"}}

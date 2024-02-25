@@ -1,17 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import { Link,useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-// import {useDispatch, useSelector} from "react-redux";
-// import {setAccessToken, setUser } from "../../redux/userSlice";
 import axios from "axios";
 import {baseURL} from "../../api/api";
 import {useDispatch } from "react-redux";
 import {setUser,setAccessToken} from "../../redux/userSlice";
-
-
-// import { jwtDecode } from "jwt-decode";
-// import { toast } from 'react-toastify';
 import './Login.css';
+
 
 const Login = ({ login }) => {
   const navigator = useNavigate();
@@ -33,10 +28,10 @@ const Login = ({ login }) => {
     // login(email, password);
     if (email.trim() === '' || password.trim() === '') {
       if (email.trim() === '') {
-        // setEmailError('Email is required');
+        setEmailError('Email is required');
       }
       if (password.trim() === '') {
-        // setPasswordError('Password is required');
+        setPasswordError('Password is required');
       }
     } else {
       axios

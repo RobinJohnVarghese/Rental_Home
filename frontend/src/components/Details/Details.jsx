@@ -1,7 +1,7 @@
 
 
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import {Link, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { baseURL } from '../../api/api';
 import { useSelector, } from "react-redux";
@@ -85,6 +85,31 @@ const Details = (props) => {
     }
   };
 
+  const handleSubmit1 = async () => {
+    // try {
+    //   const fromuser = user.user.id;
+    //   const touser = listing.realtor;
+    //   const postid = listing.id;
+    //   console.log("**********************",fromuser,touser,postid)
+    //   const response = await axios.post(
+    //     `${baseURL}listings/send_interest/`,
+    //     { fromuser, touser, postid },
+    //     {
+    //       headers: {
+    //         Authorization: `Bearer ${user.accessToken}`,
+    //         Accept: 'application/json',
+    //       },
+    //     }
+    //   );
+    //   setShowSuccessMessage(true);
+    //   console.log('Interest sent successfully', response.data);
+    //   // You can handle success or update the UI as needed
+    // } catch (error) {
+    //   setShowErrorMessage(true);
+    //   console.error('Error sending interest:', error);
+    //   // You can handle errors or show an error message
+    // }
+  };
 
 
 
@@ -170,9 +195,19 @@ return images;
             </div>
             <div className='intrestsection'>
                 {user.user.id !== listing.realtor && (
-                    <button className='intrestbutton' onClick={handleSubmit}>
-                    Send an Interest
-                    </button>
+                    <>
+                        <button className='intrestbutton' onClick={handleSubmit}>
+                            Send an Interest
+                        </button>
+                        
+                        <button className='intrestbutton' onClick={handleSubmit1} style={{background: "darkgrey",color: "darkblue"}}>
+                            <Link to={"/messagedetails/" + (listing.realtor)+ "/" } href="#"className="list-group-item list-group-item-action border-0" style={{background: "#79427c",color: "white"}}>
+                                Chat with the Seller
+                            </Link>
+                        </button>
+                       
+                    </>
+
                 )}
                 {user.user.id === listing.realtor && (
                     <p className='intrestbutton__message'>

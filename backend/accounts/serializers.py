@@ -15,6 +15,11 @@ class  UserRegistrationSerializer(serializers.ModelSerializer):
         user = UserAccount.objects.create_user(**validated_data)
         return user 
     
+# class UserAccountSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = UserAccount
+#         fields = '__all__'
+    
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserAccount

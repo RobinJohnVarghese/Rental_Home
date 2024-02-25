@@ -1,14 +1,10 @@
-
-
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { baseURL } from '../../api/api';
+import { baseURL,imageBaseUrl } from '../../api/api';
 import { useSelector, } from "react-redux";
-// import { Link } from 'react-router-dom';
 import "./MyPostDetail.css";
 import {
-    
     MDBContainer,
     MDBCard,
     MDBCardBody,
@@ -16,44 +12,18 @@ import {
     MDBRow,
     MDBInput,
     MDBTextArea,
-
-  
   } from 'mdb-react-ui-kit';
 
 
 const MyPostDetail = (props) => {
   const user = useSelector((state)=>state.user);
-
-    // const [formData, setFormData] = useState({
-    //     realtor_id: user.user.id,
-    //     slug: '',
-    //     title: '',
-    //     address: '',
-    //     city: '',
-    //     state: '',
-    //     zipcode: '',
-    //     description: '',
-    //     sale_type: 'For Rent',
-    //     price: '',
-    //     bedrooms: '',
-    //     bathrooms: '',
-    //     home_type: 'House',
-    //     sqft: '',
-    //     open_house: false,
-    //     photo_main: null,
-    //     photo_1: "",photo_2: "",photo_3: "",photo_4: "",photo_5: "",
-    //     is_published: true,
-    //     list_date: new Date().toISOString(),
-    //     // Add other fields as needed
-    //   });
-    //   console.log('formData',formData)
-    
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [selectedFile1, setSelectedFile1] = useState(null);
-  const [selectedFile2, setSelectedFile2] = useState(null);
-  const [selectedFile3, setSelectedFile3] = useState(null);
-  const [selectedFile4, setSelectedFile4] = useState(null);
-  const [selectedFile5, setSelectedFile5] = useState(null);
+  const [successMessage, setSuccessMessage] = useState('');
+  // const [selectedFile, setSelectedFile] = useState(null);
+  // const [selectedFile1, setSelectedFile1] = useState(null);
+  // const [selectedFile2, setSelectedFile2] = useState(null);
+  // const [selectedFile3, setSelectedFile3] = useState(null);
+  // const [selectedFile4, setSelectedFile4] = useState(null);
+  // const [selectedFile5, setSelectedFile5] = useState(null);
 
   const param = useParams();
   const slug =param.slug
@@ -80,74 +50,76 @@ const MyPostDetail = (props) => {
     list_date: new Date().toISOString(),
     // Add other fields as needed
   });
-  console.log('formData',listing)
+  console.log('formData from listing',listing)
 
-  const handleFileChange = (event) => {
-    const formData = new FormData();
-    formData.append('photo', selectedFile);
-    console.log('Selected file:', selectedFile);
-    const file = event.target.files[0];
-    console.log('Selected event.target.files[0]:',event.target.files[0]);
-    // Update selected file
-    setSelectedFile(file);
-    console.log('Selected file:',file);
+  // const handleFileChange = (event) => {
+  //   const formData = new FormData();
+  //   formData.append('photo_main', selectedFile);
+  //   console.log('Selected file:', selectedFile);
+  //   const file = event.target.files[0];
+  //   console.log('Selected event.target.files[0]:',event.target.files[0]);
+  //   // Update selected file
+  //   setSelectedFile(file);
+  //   console.log('Selected file:',file);
     
-    };
-  const handleFileChange1 = (event) => {
-    const formData = new FormData();
-    formData.append('photo', selectedFile1);
-    console.log('Selected file:', selectedFile1);
-    const file = event.target.files[0];
-    console.log('Selected event.target.files[0]:',event.target.files[0]);
-    // Update selected file
-    setSelectedFile1(file);
-    console.log('Selected file:',file);
+  //   };
+  // const handleFileChange1 = (event) => {
+  //   const formData = new FormData();
+  //   formData.append('photo_1', selectedFile1);
+  //   console.log('Selected file 1:', selectedFile1);
+  //   const file = event.target.files[0];
+  //   console.log('Selected event.target.files[0] 1:',event.target.files[0]);
+  //   // Update selected file
+  //   setSelectedFile1(file);
+  //   console.log('Selected file 1:',file);
     
-    };
-  const handleFileChange2 = (event) => {
-    const formData = new FormData();
-    formData.append('photo', selectedFile2);
-    console.log('Selected file:', selectedFile2);
-    const file = event.target.files[0];
-    console.log('Selected event.target.files[0]:',event.target.files[0]);
-    // Update selected file
-    setSelectedFile2(file);
-    console.log('Selected file:',file);
+  //   };
+  // const handleFileChange2 = (event) => {
+  //   const formData = new FormData();
+  //   formData.append('photo_2', selectedFile2);
+  //   console.log('Selected file 2:', selectedFile2);
+  //   const file = event.target.files[0];
+  //   console.log('Selected event.target.files[0]: 2',event.target.files[0]);
+  //   // Update selected file
+  //   setSelectedFile2(file);
+  //   console.log('Selected file 2: ',file);
     
-    };
-  const handleFileChange3 = (event) => {
-    const formData = new FormData();
-    formData.append('photo', selectedFile3);
-    console.log('Selected file:', selectedFile3);
-    const file = event.target.files[0];
-    console.log('Selected event.target.files[0]:',event.target.files[0]);
-    // Update selected file
-    setSelectedFile3(file);
-    console.log('Selected file:',file);
+  //   };
+  // const handleFileChange3 = (event) => {
+  //   const formData = new FormData();
+  //   // formData.append('photo_3', selectedFile3);
+  //   // console.log('Selected file 3:', selectedFile3);
+  //   const file = event.target.files[0];
+  //   console.log('Selected event.target.files[0] 3:',event.target.files[0]);
+  //   // Update selected file
+  //   setSelectedFile3(file);
+  //   console.log('Selected file 3:',file);
+  //   formData.append('photo_3', file);
+  //   console.log('Selected file 3:', file);
     
-    };
-  const handleFileChange4 = (event) => {
-    const formData = new FormData();
-    formData.append('photo', selectedFile4);
-    console.log('Selected file:', selectedFile4);
-    const file = event.target.files[0];
-    console.log('Selected event.target.files[0]:',event.target.files[0]);
-    // Update selected file
-    setSelectedFile4(file);
-    console.log('Selected file:',file);
+  //   };
+  // const handleFileChange4 = (event) => {
+  //   const formData = new FormData();
+  //   formData.append('photo_4', selectedFile4);
+  //   console.log('Selected file 4:', selectedFile4);
+  //   const file = event.target.files[0];
+  //   console.log('Selected event.target.files[0] 4:',event.target.files[0]);
+  //   // Update selected file
+  //   setSelectedFile4(file);
+  //   console.log('Selected file 4:',file);
     
-    };
-  const handleFileChange5 = (event) => {
-    const formData = new FormData();
-    formData.append('photo', selectedFile5);
-    console.log('Selected file:', selectedFile5);
-    const file = event.target.files[0];
-    console.log('Selected event.target.files[0]:',event.target.files[0]);
-    // Update selected file
-    setSelectedFile5(file);
-    console.log('Selected file:',file);
+  //   };
+  // const handleFileChange5 = (event) => {
+  //   const formData = new FormData();
+  //   formData.append('photo_5', selectedFile5);
+  //   console.log('Selected file 5:', selectedFile5);
+  //   const file = event.target.files[0];
+  //   console.log('Selected event.target.files[0] 5:',event.target.files[0]);
+  //   // Update selected file
+  //   setSelectedFile5(file);
+  //   console.log('Selected file 5:',file);
     
-    };
+  //   };
 
 useEffect(() => {
     const fetchData = async () => {
@@ -171,14 +143,50 @@ if (!listing) {
 }
 
 const handleChange = (event) => {
-    const { name, value } = event.target;
+  const fieldName = event.target.name;
+  const file = event.target.files[0];
     setListing((prevProfile) => ({
       ...prevProfile,
-      [name]: value,
+      [fieldName]: file,
     }));
   };
 
 
+  const handleFileChange = (event) => {
+    const fieldName = event.target.name;
+    const file = event.target.files[0];
+
+    setListing((prevProfile) => ({
+      ...prevProfile,
+      [fieldName]: file,
+    }));
+  };
+
+//   const handlefileChanges = (event) => {
+//     const { name, value } = event.target;
+
+//     // Check if the field being updated is a photo field
+//     if (name.startsWith('photo_')) {
+//         // Extract the photo number from the field name
+//         const photoNumber = parseInt(name.split('_')[1]);
+
+//         // Update the corresponding photo property
+//         setListing((prevProfile) => ({
+//             ...prevProfile,
+//             [`photo_${photoNumber}`]: value,
+//         }));
+//     } else {
+//         // If it's not a photo field, update as usual
+//         setListing((prevProfile) => ({
+//             ...prevProfile,
+//             [name]: value,
+//         }));
+//     }
+// };
+
+
+
+// console.log("$$$$$$$$$$$$$$$$$$$$$ listing.photo_main",listing.photo_main)
   const handleUpdate = async () => {
     try {
       console.log("************* Entered to try ***********************")
@@ -201,11 +209,108 @@ const handleChange = (event) => {
       formData.append('open_house', listing.open_house);
       formData.append('is_published', listing.is_published);
       formData.append('list_date', listing.list_date);
-  
-      if (selectedFile) {
-        formData.append('photo_main', selectedFile, selectedFile.name);
-      }else{
-        formData.append('photo_main', listing, listing.name);
+      // formData.append('photo_main', listing.photo_main);
+      // formData.append('photo_1', listing.photo_1);
+      // formData.append('photo_2', listing.photo_2);
+      // formData.append('photo_3', listing.photo_3);
+      // formData.append('photo_4', listing.photo_4);
+      // formData.append('photo_5', listing.photo_5);
+      // if (selectedFile) {
+      //   formData.append('photo_main', selectedFile, selectedFile.name);
+      //   console.log("$$$$$$$$$$$$$$$'photo_main', selectedFile",selectedFile)
+      // }else{
+      //   formData.append('photo_main', listing.photo_main);
+      //   console.log("$$$$$$$$$$$$$$$'photo_main', listing.photo_main",listing.photo_main)
+      // }
+      // if (selectedFile1) {
+      //   formData.append('photo_1', selectedFile1, selectedFile1.name);
+      // }else{
+      //   formData.append('photo_1', listing, listing.name);
+      // }
+      // if (selectedFile2) {
+      //   formData.append('photo_2', selectedFile2, selectedFile2.name);
+      // }else{
+      //   formData.append('photo_2', listing, listing.name);
+      // }
+      // if (selectedFile3) {
+      //   formData.append('photo_3', selectedFile3, selectedFile3.name);
+      // }else{
+      //   formData.append('photo_3', listing, listing.name);
+      // }
+      // if (selectedFile4) {
+      //   formData.append('photo_4', selectedFile4, selectedFile4.name);
+      // }else{
+      //   formData.append('photo_4', listing, listing.name);
+      // }
+      // if (selectedFile5) {
+      //   formData.append('photo_5', selectedFile2, selectedFile2.name);
+      // }else{
+      //   formData.append('photo_5', listing, listing.name);
+      // }
+
+      // const formData = new FormData();
+      // Object.keys(listing).forEach((key) => {
+      //   // Append all form fields to the FormData object
+      //   formData.append(key, listing[key]);
+      // });
+      if (listing.photo_main instanceof File) {
+        // If it's a File object (i.e., a newly uploaded file), append it directly
+        formData.append('photo_main', listing.photo_main);
+      } else if (typeof listing.photo_main === 'string') {
+        // If it's a string (i.e., an existing file URL), fetch the file and append it
+        const response = await fetch(listing.photo_main);
+        const blob = await response.blob();
+        formData.append('photo_main', blob, 'photo_main.jpg');
+      }
+
+      if (listing.photo_1 instanceof File) {
+        // If it's a File object (i.e., a newly uploaded file), append it directly
+        formData.append('photo_1', listing.photo_1);
+      } else if (typeof listing.photo_1 === 'string') {
+        // If it's a string (i.e., an existing file URL), fetch the file and append it
+        const response = await fetch(listing.photo_1);
+        const blob = await response.blob();
+        formData.append('photo_1', blob, 'photo_1.jpg');
+      }
+
+      if (listing.photo_2 instanceof File) {
+        // If it's a File object (i.e., a newly uploaded file), append it directly
+        formData.append('photo_2', listing.photo_2);
+      } else if (typeof listing.photo_2 === 'string') {
+        // If it's a string (i.e., an existing file URL), fetch the file and append it
+        const response = await fetch(listing.photo_2);
+        const blob = await response.blob();
+        formData.append('photo_2', blob, 'photo_2.jpg');
+      }
+
+      if (listing.photo_3 instanceof File) {
+        // If it's a File object (i.e., a newly uploaded file), append it directly
+        formData.append('photo_3', listing.photo_3);
+      } else if (typeof listing.photo_3 === 'string') {
+        // If it's a string (i.e., an existing file URL), fetch the file and append it
+        const response = await fetch(listing.photo_3);
+        const blob = await response.blob();
+        formData.append('photo_3', blob, 'photo_3.jpg');
+      }
+
+      if (listing.photo_4 instanceof File) {
+        // If it's a File object (i.e., a newly uploaded file), append it directly
+        formData.append('photo_4', listing.photo_4);
+      } else if (typeof listing.photo42 === 'string') {
+        // If it's a string (i.e., an existing file URL), fetch the file and append it
+        const response = await fetch(listing.photo_4);
+        const blob = await response.blob();
+        formData.append('photo_4', blob, 'photo_4.jpg');
+      }
+
+      if (listing.photo_5 instanceof File) {
+        // If it's a File object (i.e., a newly uploaded file), append it directly
+        formData.append('photo_5', listing.photo_5);
+      } else if (typeof listing.photo_5 === 'string') {
+        // If it's a string (i.e., an existing file URL), fetch the file and append it
+        const response = await fetch(listing.photo_5);
+        const blob = await response.blob();
+        formData.append('photo_5', blob, 'photo_5.jpg');
       }
       
       // Make the API request
@@ -218,27 +323,27 @@ const handleChange = (event) => {
         },
       }
     );
-    console.log("EWEWEWEFWEWEWEWEWE profile picture",formData)
+    console.log("EWEWEWEFWEWEWEWEWE post",formData)
   
-      console.log('Profile updated successfully:', response.data);
-    //   setSuccessMessage('Profile updated successfully');
+      console.log('Post updated successfully:', response.data);
+      setSuccessMessage('Post updated successfully');
 
       // Clear the success message after a few seconds (adjust as needed)
       setTimeout(() => {
-        // setSuccessMessage('');
+        setSuccessMessage('');
       }, 3000); // Clear the message after 3 seconds
-  
+      window.location.href = '/my-posts';
       // Exit edit mode
     //   setEditMode(false);
     } catch (error) {
-      console.error('Error updating profile:', error);
+      console.error('Error updating post:', error);
       if (error.response) {
         console.error('Response data:', error.response.data);
       }
     }
   };
 
-
+  console.log("listing.photo_main",listing.photo_main)
 
   const handleDelete = async () => {
     // Display a confirmation dialog before deleting (optional)
@@ -267,31 +372,6 @@ const handleChange = (event) => {
     }
   };
 
-//     const handleChange = (e) => {
-//         const { name, value, type, checked, files } = e.target;
-    
-//         setFormData((prevData) => ({
-//           ...prevData,
-//           [name]: type === 'checkbox' ? checked : type === 'file' ? files[0] : value,
-//         }));
-//       };
-
-
-    //   const handleFileChange = (event) => {
-    //     const fieldName = event.target.name;
-    //     const file = event.target.files[0];
-    
-    //     setListing({
-    //       ...listing,
-    //       [fieldName]: file,
-    //     });
-    //   };
-//     };
-
-
-
-
-
   return (
 
     <MDBContainer fluid style={{padding:"0"}}>
@@ -308,6 +388,7 @@ const handleChange = (event) => {
     <MDBCardBody className='p-5 text-center'>
     <form>
   <div className='listingdetail'>
+        {successMessage && (<div className="alert alert-success" role="alert">{successMessage}</div>)}
             <MDBRow>
                         <MDBCol col='6'>
                             <MDBInput
@@ -515,26 +596,19 @@ const handleChange = (event) => {
                             accept='image/*'
                             onChange={handleFileChange}
                           />
-                        <div key={1} className="images">
+                        <div  className="images">
                             <div className="flexColStart r-card">
                                 {
                                     listing.photo_main ? (
                                         <div className='listingdetail__display'>
-                                            <img className='listingdetail__display__image' src={selectedFile ? URL.createObjectURL(selectedFile): listing.photo_main} alt='' />
+                                            {/* <img className='listingdetail__display__image' src={selectedFile ? URL.createObjectURL(selectedFile):listing.photo_main */}
+                                            <img className='listingdetail__display__image' src={typeof listing.photo_main === 'string' ? listing.photo_main : URL.createObjectURL(listing.photo_main)} alt='' />
+                                              {/* //  `${imageBaseUrl}${listing.photo_main}` */}
                                         </div>
                                     ) : null
                                 }
                             </div>
                         </div>
-                        {/* {newPhoto && (
-                                <div key={2} className="images">
-                                    <div className="flexColStart r-card">
-                                        <div className='listingdetail__display'>
-                                            <img className='listingdetail__display__image' src={newPhoto} alt='' />
-                                        </div>
-                                    </div>
-                                </div>
-                            )}                         */}
                         </MDBCol>
 
                         <MDBCol col='6'>
@@ -544,14 +618,16 @@ const handleChange = (event) => {
                             name='photo_1'
                             type='file'
                             accept='image/*'
-                            onChange={handleFileChange1}
+                            // onChange={handleFileChange1}
+                            onChange={handleFileChange}
                             />
-                        <div key={1} className="images">
+                        <div  className="images">
                             <div className="flexColStart r-card">
                                 {
                                     listing.photo_1 ? (
                                         <div className='listingdetail__display'>
-                                            <img className='listingdetail__display__image' src={selectedFile1 ? URL.createObjectURL(selectedFile1): listing.photo_1} alt='' />
+                                            {/* <img className='listingdetail__display__image' src={selectedFile1 ? URL.createObjectURL(selectedFile1): listing.photo_1} alt='' /> */}
+                                            <img className='listingdetail__display__image' src={typeof listing.photo_1 === 'string' ? listing.photo_1 : URL.createObjectURL(listing.photo_1)} alt='' />
                                         </div>
                                     ) : null
                                 }
@@ -568,14 +644,16 @@ const handleChange = (event) => {
                             name='photo_2'
                             type='file'
                             accept='image/*'
-                            onChange={handleFileChange2}
+                            // onChange={handleFileChange2}
+                            onChange={handleFileChange}
                           />
                           <div key={1} className="images">
                             <div className="flexColStart r-card">
                                 {
                                     listing.photo_2 ? (
                                         <div className='listingdetail__display'>
-                                            <img className='listingdetail__display__image' src={selectedFile2 ? URL.createObjectURL(selectedFile2):listing.photo_2} alt='' />
+                                            {/* <img className='listingdetail__display__image' src={selectedFile2 ? URL.createObjectURL(selectedFile2):listing.photo_2} alt='' /> */}
+                                            <img className='listingdetail__display__image' src={typeof listing.photo_2 === 'string' ? listing.photo_2 : URL.createObjectURL(listing.photo_2)} alt='' />
                                         </div>
                                     ) : null
                                 }
@@ -590,14 +668,16 @@ const handleChange = (event) => {
                             name='photo_3'
                             type='file'
                             accept='image/*'
-                            onChange={handleFileChange3}
+                            // onChange={handleFileChange3}
+                            onChange={handleFileChange}
                             />
                             <div key={1} className="images">
                             <div className="flexColStart r-card">
                                 {
                                     listing.photo_3 ? (
                                         <div className='listingdetail__display'>
-                                            <img className='listingdetail__display__image' src={selectedFile3 ? URL.createObjectURL(selectedFile3):listing.photo_3} alt='' />
+                                            {/* <img className='listingdetail__display__image' src={selectedFile3 ? URL.createObjectURL(selectedFile3):listing.photo_3} alt='' /> */}
+                                            <img className='listingdetail__display__image' src={typeof listing.photo_3 === 'string' ? listing.photo_3 : URL.createObjectURL(listing.photo_3)} alt='' />
                                         </div>
                                     ) : null
                                 }
@@ -614,14 +694,17 @@ const handleChange = (event) => {
                             name='photo_4'
                             type='file'
                             accept='image/*'
-                            onChange={handleFileChange4}
+                            // onChange={handleFileChange4}
+                            onChange={handleFileChange}
                           />
                           <div key={1} className="images">
                             <div className="flexColStart r-card">
                                 {
                                     listing.photo_4 ? (
                                         <div className='listingdetail__display'>
-                                            <img className='listingdetail__display__image' src={selectedFile4 ? URL.createObjectURL(selectedFile4):listing.photo_4} alt='' />
+                                            {/* <img className='listingdetail__display__image' src={selectedFile4 ? URL.createObjectURL(selectedFile4):listing.photo_4} alt='' /> */}
+                                            <img className='listingdetail__display__image' src={typeof listing.photo_4 === 'string' ? listing.photo_4 : URL.createObjectURL(listing.photo_4)} alt='' />
+
                                         </div>
                                     ) : null
                                 }
@@ -636,14 +719,17 @@ const handleChange = (event) => {
                             name='photo_5'
                             type='file'
                             accept='image/*'
-                            onChange={handleFileChange5}
+                            // onChange={handleFileChange5}
+                            onChange={handleFileChange}
                             />
                             <div key={1} className="images">
                             <div className="flexColStart r-card">
                                 {
                                     listing.photo_5 ? (
                                         <div className='listingdetail__display'>
-                                            <img className='listingdetail__display__image' src={selectedFile5 ? URL.createObjectURL(selectedFile5):listing.photo_5} alt='' />
+                                            {/* <img className='listingdetail__display__image' src={selectedFile5 ? URL.createObjectURL(selectedFile5):listing.photo_5} alt='' /> */}
+                                            <img className='listingdetail__display__image' src={typeof listing.photo_5 === 'string' ? listing.photo_5 : URL.createObjectURL(listing.photo_5)} alt='' />
+
                                         </div>
                                     ) : null
                                 }
@@ -651,20 +737,7 @@ const handleChange = (event) => {
                         </div>
                         </MDBCol>
                     </MDBRow>
-                    
-
-                    
-            {/* <div className='listingdetail__header'>
-                <h1 className='listingdetail__title'>{listing.title}</h1>
-                <p className='listingdetail__location'>{listing.city}, {listing.state}, {listing.zipcode}</p>
-            </div> */}
-            
-            {/* <div className='intrestsection'>
-            {showSuccessMessage && (<div style={{ color: 'green' }}>Interest sent successfully!</div>)}
-            {showErrorMessage && (<div style={{ color: 'red' }}>Interest already sent!</div>)}
-                onClick={handleDelete}
-                onClick={handleUpdate}
-            </div> */}
+            {successMessage && (<div className="alert alert-success" role="alert">{successMessage}</div>)}
             <div className='intrestsection'>
                 <button className='intrestbutton' style={{background:'lightgreen'}} type="button" onClick={handleUpdate}>
                     Update Post
@@ -674,47 +747,7 @@ const handleChange = (event) => {
                 </button>
             </div>
             <div className='row'>
-                
-                    {/* <div className='listingdetail__displaymain'> */}
-                        {/* <img className='listingdetail__displaymain__image' src={listing.photo_main} alt='' /> */}
-                    {/* </div> */}
-                
-                {/* <div className='col-1-of-4'>
-                    <div className='listingdetail__display'>
-                        <img className='listingdetail__display__image' src={realtor.photo} alt='' />
-                    </div>
-                    <h3 className='listingdetail__realtor'>{realtor.name}</h3>
-                    <p className='listingdetail__contact'>{realtor.phone}</p>
-                    <p className='listingdetail__contact'>{realtor.email}</p>
-                    <p className='listingdetail__about'>{realtor.description}</p>
-                </div> */}
-            </div>
-            {/* <div >
-                <div className='col-1-of-2' >
-                    <ul className='listingdetail__list' style={{display:"flex" , justifyContent:"space-evenly"}}>
-                        <li className='listingdetail__list__item'>Home Type: {listing.home_type}</li>
-                        <li className='listingdetail__list__item'>Price: ₹{listing.price}</li>
-                        <li className='listingdetail__list__item'>Bedrooms: {listing.bedrooms}</li>
-                        <li className='listingdetail__list__item'>Bathrooms: {listing.bathrooms}</li>
-                        <li className='listingdetail__list__item'>Square Feet: {listing.sqft}</li>
-                    </ul>
-                </div>
-                <div className='col-1-of-2'>
-                    <ul className='listingdetail__list' style={{ textAlign:"center"}}>
-                        <li className='listingdetail__list__item'>Sale Type: {listing.sale_type}</li>
-                        <li className='listingdetail__list__item'>Address: {listing.address}</li>
-                        <li className='listingdetail__list__item'>City: {listing.city}</li>
-                        <li className='listingdetail__list__item'>State: {listing.state}</li>
-                        <li className='listingdetail__list__item'>Zipcode: {listing.zipcode}</li>
-                    </ul>
-                </div>
-            </div>
-            <div className='row'>
-                <p className='listingdetail__description' style={{ textAlign:"center"}}>{listing.description}</p>
-            </div> */}
-            
-            {/* {displayInteriorImages()} */}
-            
+            </div>   
         </div>
         </form>
         </MDBCardBody>

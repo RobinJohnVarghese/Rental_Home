@@ -40,10 +40,10 @@ const Header = () => {
   const handleSearch = async () => {
     try {
       const responses = await Promise.all([
-        axios.get(`${baseURL}listings/ListingSearchView?title=${searchQuery}`),
-        axios.get(`${baseURL}listings/ListingSearchView?address=${searchQuery}`),
-        axios.get(`${baseURL}listings/ListingSearchView?city=${searchQuery}`),
-        axios.get(`${baseURL}listings/ListingSearchView?state=${searchQuery}`)
+        axios.get(`${baseURL}listings/ListingSearchView?query=${searchQuery}`),
+        // axios.get(`${baseURL}listings/ListingSearchView?address=${searchQuery}`),
+        // axios.get(`${baseURL}listings/ListingSearchView?city=${searchQuery}`),
+        // axios.get(`${baseURL}listings/ListingSearchView?state=${searchQuery}`)
       ]);
   
       // Combine all response data into a single array
@@ -59,7 +59,7 @@ const Header = () => {
       // Save the combined data to state
       setSearchResults(searchData);
       
-      navigator('/searchdatapage', { state: { searchResults } });
+      navigator('/searchdatapage', { state: { searchData, searchQuery } });
       console.log("#############  header searchResults", searchResults);
       console.log("#############  Results", searchData);
       console.log("#############  searchData.length", searchData.length);
@@ -114,7 +114,7 @@ const Header = () => {
       <div className="flexCenter innerWidth paddings h-container">
         {/* logo */}
         <Link className='navbar__top__logo__link' to='/'><img src="./logo1.png" alt="logo" width={100} /></Link>
-
+        
 
         {/* menu */}
         <OutsideClickHandler

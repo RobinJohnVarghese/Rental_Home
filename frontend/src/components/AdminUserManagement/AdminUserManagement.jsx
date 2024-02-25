@@ -61,7 +61,7 @@ const UserList = () => {
     const handleBlockUnblock = async (userId, is_active) => {
       console.log('USERID',userId)
         try {
-          const url = `${baseURL}admin-side/users/${userId}/${is_active ? 'unblock' : 'block'}/`;
+          const url = `${baseURL}admin-side/users/${userId}/${is_active ? 'block' : 'unblock'}/`;
           const response = await fetch(url, {
             method: 'POST',
             headers: {
@@ -140,7 +140,7 @@ const UserList = () => {
                 cursor: 'pointer',
               }}
             >
-              {user.is_active ? 'UnBlock' : 'Block'}
+              {user.is_active ? 'Block' : 'UnBlock'}
             </button>
           </td>
         </tr>

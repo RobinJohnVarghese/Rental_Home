@@ -27,7 +27,7 @@ User = get_user_model()
 
 
 class SignupView(APIView):
-    permission_classes = (permissions.AllowAny, )
+    # permission_classes = (permissions.AllowAny, )
 
     def post(self, request, format=None):
         data = self.request.data
@@ -67,58 +67,69 @@ def get_tokens_for_user(user):
 #         data = self.request.data
     
 class LoginView(APIView):
-    permission_classes = (permissions.AllowAny, )
-
     def post(self, request, format=None):
         data = request.data
         response = Response()
-        # print("UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU")
-        # print(response,"+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
         email = data.get('email', None)
         password = data.get('password', None)
-        # print(email,password,"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")
         user = authenticate(email=email, password=password)
-        # print(email,password,"CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC")
-        # if user.is_active == False:
-        #     return Response({"Blocked" : "This account is blocked!!"}, status=status.HTTP_404_NOT_FOUND)
         if user is not None:
-            # print(user,"DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD")
-            if user.is_active:
-                # print(user,"EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
-                data = get_tokens_for_user(user)
-                # access_token, created = AccessToken.objects.get_or_create(user=user)
-                # access_token.token = data["access"]
-                # access_token.save()
-                # print("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",data)
-                response = JsonResponse({
-                    "data": data,
-                    "user": {
-                        "id": user.id,
-                        "username": user.email,
-                        "name": user.name,
-                    }
-                })
-                
-                response.set_cookie(
-                    key = settings.SIMPLE_JWT['AUTH_COOKIE'],
-                    value = data["access"],
-                    expires = settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
-                    secure = settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
-                    httponly = settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
-                    samesite = settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
-                )
-                csrf.get_token(request)
-                response.data = {"Success" : "Login successfully","data":data}
-                return response
-            else:
+            if not user.is_active:
+                print('FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF')
+                return Response({"No active": "This account is not active!!"}, status=status.HTTP_451_UNAVAILABLE_FOR_LEGAL_REASONS)
+            data = get_tokens_for_user(user)
+            response = JsonResponse({
+                "data": data,
+                "user": {
+                    "id": user.id,
+                    "username": user.email,
+                    "name": user.name,
+                }
+            })
+            
+            response.set_cookie(
+                key = settings.SIMPLE_JWT['AUTH_COOKIE'],
+                value = data["access"],
+                expires = settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
+                secure = settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
+                httponly = settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
+                samesite = settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
+            )
+            csrf.get_token(request)
+            response.data = {"Success" : "Login successfully","data":data}
+            return response
+            # else:
                 # print('FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF')
-                return Response({"No active" : "This account is not active!!"}, status=status.HTTP_404_NOT_FOUND)
+                # return Response({"No active" : "This account is not active!!"}, status=status.HTTP_451_UNAVAILABLE_FOR_LEGAL_REASONS)
         else:
-            # print('GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG')
+            print('GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG')
             return Response({"Invalid" : "Invalid username or password!!"}, status=status.HTTP_404_NOT_FOUND)
-                # token = UserToken.objects.create(email=email, access_token=data["access"])
-                # print("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY",email,data["access"])
-                # token.save()
+
+
+# class LoginView(APIView):
+#     def post(self, request, format=None):
+#         data = request.data
+#         print("RRRRRRRRRRRRRRRRRRRRRRR  data",data)
+#         serializer = UserAccountSerializer(data=data)
+#         print("RRRRRRRRRRRRRRRRRRRRRRR  serializer",serializer)
+#         if serializer.is_valid():
+#             email = data.get('email', None)
+#             password = data.get('password', None)
+#             user = authenticate(email=email, password=password)
+#             if user is not None:
+#                 if user.is_active:
+#                     # Your existing code for handling login
+#                     return Response({"Success": "Login successfully"}, status=status.HTTP_200_OK)
+#                 else:
+#                     print('GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG')
+#                     return Response({"No active": "This account is not active!!"}, status=status.HTTP_451_UNAVAILABLE_FOR_LEGAL_REASONS)
+#             else:
+#                 print('fffffffffffffffffffffffffffffffffffffffffffffff')
+#                 return Response({"Invalid": "Invalid username or password!!"}, status=status.HTTP_404_NOT_FOUND)
+#         else:
+#             print('ssssssssssssssssssssssssssssssssssssssssssssssssssss')
+#             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class LogoutView(APIView):
     def get(self, request):

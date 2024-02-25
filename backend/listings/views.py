@@ -307,32 +307,48 @@ class ListingDeleteView(DestroyAPIView):
 class ListingSearchView(APIView):
     serializer_class = ListingSerializer
 
-    def get(self, request, *args, **kwargs):
-        # Get search query parameters from the request
-        title = self.request.GET.get('title')
-        address = self.request.GET.get('address')
-        city = self.request.GET.get('city')
-        state = self.request.GET.get('state')
-        # price = self.request.GET.get('price')
+    # def get(self, request, *args, **kwargs):
+    #     # Get search query parameters from the request
+    #     title = self.request.GET.get('title')
+    #     address = self.request.GET.get('address')
+    #     city = self.request.GET.get('city')
+    #     state = self.request.GET.get('state')
+    #     # price = self.request.GET.get('price')
 
-        # Filter queryset based on search parameters
-        queryset = Listing.objects.all()
-        if title:
-            queryset = queryset.filter(title__icontains=title)
-        if address:
-            queryset = queryset.filter(address__icontains=address)
-        if city:
-            queryset = queryset.filter(city__icontains=city)
-        if state:
-            queryset = queryset.filter(state__icontains=state)
-        # if price:
-        #     queryset = queryset.filter(price=price)  # Adjust as per your price field type
+    #     # Filter queryset based on search parameters
+    #     queryset = Listing.objects.all()
+    #     if title:
+    #         queryset = queryset.filter(title__icontains=title)
+    #     if address:
+    #         queryset = queryset.filter(address__icontains=address)
+    #     if city:
+    #         queryset = queryset.filter(city__icontains=city)
+    #     if state:
+    #         queryset = queryset.filter(state__icontains=state)
+    #     # if price:
+    #     #     queryset = queryset.filter(price=price)  # Adjust as per your price field type
 
-        # Serialize queryset to list of dictionaries
-        serializer = ListingSerializer(queryset, many=True)
-        data = serializer.data
+    #     # Serialize queryset to list of dictionaries
+    #     serializer = ListingSerializer(queryset, many=True)
+    #     data = serializer.data
         
-        return Response(data)
+    #     return Response(data)
+    
+    def get(self, request, *args, **kwargs):
+        try:
+            query = self.request.GET.get('query')
+            if query is None:
+                return Response({"error": "Query parameter is missing"}, status=status.HTTP_400_BAD_REQUEST)
+
+            queryset = Listing.objects.filter(Q(title__icontains=query) | Q(address__icontains=query)
+                                            | Q(city__icontains=query) | Q(state__icontains=query))
+
+            serializer = self.serializer_class(queryset, many=True)
+            print("##################### serializer.data",serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 
@@ -482,5 +498,5 @@ class SendMessages(generics.CreateAPIView):
 class ProfileDetail(generics.RetrieveUpdateAPIView):
     serializer_class = ProfileSerializer
     queryset = UserAccount.objects.all()
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     

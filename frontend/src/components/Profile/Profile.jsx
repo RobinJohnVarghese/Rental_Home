@@ -4,20 +4,14 @@ import { useSelector, } from "react-redux";
 import axios from 'axios';
 import { baseURL,imageBaseUrl } from '../../api/api';
 import Cookies from 'js-cookie';
-import {
-  MDBContainer,
-  MDBCard,
-  MDBCardBody,
-} from 'mdb-react-ui-kit';
+import { MDBContainer, MDBCard, MDBCardBody, } from 'mdb-react-ui-kit';
 
 
 
 
 function Profile() {
   const user = useSelector((state)=>state.user);
-  console.log("+++++ user ",user.user)
   const [editMode, setEditMode] = useState(false);
-  // console.log("%%%%%%%%%%%%%%%%%%%%%",editMode)
   const [successMessage, setSuccessMessage] = useState('');
   const [profile, setProfile] = useState({
     name: user.user.name || "",
@@ -34,7 +28,6 @@ function Profile() {
     // Fetch user profile data when the component mounts
     const fetchUserProfile = async () => {
       try {
-        // console.log("###################",)
         const response = await axios.get(
           `${baseURL}accounts/user_profile`, 
           {
@@ -46,7 +39,6 @@ function Profile() {
           }
         );
         const userProfileData = response.data; 
-        // console.log("//////////////", response.data);
         setProfile((prevProfile) => ({
           ...prevProfile,
           phone: userProfileData.phone,
@@ -66,9 +58,7 @@ function Profile() {
     
   }, [ editMode, user.accessToken ]);
 
-  console.log("^^^^^^^^^^^^^^^^^^ profile",profile)
-  // console.log("^^^^^^^^^^^^^^^^^^ user",user)
-
+ 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setProfile((prevProfile) => ({
@@ -77,29 +67,19 @@ function Profile() {
     }));
   };
   
-  // const handleImageChange = (event) => {
-  //   const { name, files } = event.target;
-  //   setProfile((prevProfile) => ({
-  //     ...prevProfile,
-  //     [name]: files[0],  // Assuming a single file is expected
-  //   }));
-  // };
+ 
 
   const handleFileChange = (event) => {
     const formData = new FormData();
     formData.append('photo', selectedFile);
-    console.log('Selected file:', selectedFile);
 
     const file = event.target.files[0];
-    console.log('Selected event.target.files[0]:',event.target.files[0]);
     // Update selected file
     setSelectedFile(file);
 
     // Update selected file name
     setSelectedFileName(file ? file.name : '');
 
-    // Now you can do something with the selected file, like saving it to local storage
-    console.log('Selected file:',file);
     
 };
   
@@ -107,8 +87,6 @@ function Profile() {
 
   const handleUpdate = async () => {
     try {
-      console.log("************* Entered to try ***********************")
-      
       const formData = new FormData();
       formData.append('name', profile.name);
       formData.append('email', profile.email);
@@ -130,9 +108,6 @@ function Profile() {
         },
       }
     );
-    console.log("EWEWEWEFWEWEWEWEWE profile picture",formData)
-  
-      console.log('Profile updated successfully:', response.data);
       setSuccessMessage('Profile updated successfully');
 
       // Clear the success message after a few seconds (adjust as needed)

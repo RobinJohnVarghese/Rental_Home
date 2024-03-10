@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-// import { Table, Button } from 'react-bootstrap';
-// import {useNavigate} from 'react-router-dom';
-// import AdminNavbar from '../Navbar/AdminNavbar';
-// import {MDBBtn,} from 'mdb-react-ui-kit';
 import { baseURL } from '../../api/api';
 import { useSelector} from "react-redux";
 
@@ -13,14 +9,9 @@ const UserList = () => {
 
     const [users, setUsers] = useState([]);
     const admin = useSelector((state)=>state.admin);
-    console.log("rrrrr",users)
-    console.log("rrrrr1",admin)
     const [searchTerm, setSearchTerm] = useState('');
-    const [searchResults, setSearchResults] = useState([]);
+    
 
-    // const handleViewClick = (userId) => {
-    //     console.log(`View button clicked for Salon ID ${userId}`);
-    //   };
 
     useEffect(() => {
         axios.get(`${baseURL}admin-side/user-list/`,{
@@ -29,34 +20,26 @@ const UserList = () => {
           },
         })
             .then(response => {
-                console.log("fffffffff",)
                 setUsers(response.data);
-                console.log("EEEEEEEE",)
             })
             .catch(error => {
                 console.error('Error fetching user data:', error);
             });
-    }, []);
+    }, [admin.adminAccessToken]);
 
-    console.log("EEEEEEEE",users)
+    
 
     const handleSearch = async (e) => {
       try {
         e.preventDefault();
         const response = await axios.get(`${baseURL}admin-side/users/search/?search=${searchTerm}`);
-        const data = response.data;  
-        // console.log('DATA:', data);
+        const data = response.data; 
         setUsers(data);
         
       } catch (error) {
         console.error('Error searching:', error);
       }
     };
-
-
-
-
-    
 
     const handleBlockUnblock = async (userId, is_active) => {
       console.log('USERID',userId)
@@ -72,9 +55,7 @@ const UserList = () => {
       
           if (!response.ok) {
             throw new Error(`Failed to ${is_active ? 'unblock' : 'block'} user.`);
-            
           }
-          
           
           setUsers(prevUsers => {
             return prevUsers.map(user => {
@@ -85,9 +66,6 @@ const UserList = () => {
             });
           });
       
-      
-          const data = await response.json();
-          // console.log(data)
         } catch (error) {
           console.error('Error:', error.message);
         }

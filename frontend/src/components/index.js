@@ -14,14 +14,13 @@ export {default as MyPostDetail} from './MyPostDetail/MyPostDetail'
 export {default as Notifications} from './Notifications/Notifications';
 export {default as SearchData} from './SearchData/SearchData'
 export {default as Message} from './Message/Message';
-export {default as MessageDetails} from './MessageDetails/MessageDetails';
-export {default as UserCard} from './UserCard/UserCard';
+
+
 
 
 export {default as Admin} from './Admin/AdminHome';
 export {default as AdminHeader} from './AdminHeader/AdminHeader';
 export {default as AdminLogin} from './AdminLogin/AdminLogin';
-export {default as AdminFooter} from './AdminFooter/AdminFooter';
 export {default as AdminUserManagement} from './AdminUserManagement/AdminUserManagement';
 export {default as AdminPosts} from './AdminPosts/AdminPosts'
 

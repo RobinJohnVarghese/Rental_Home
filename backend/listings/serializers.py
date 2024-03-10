@@ -1,7 +1,10 @@
 from rest_framework import serializers
-from .models import Listing,Notifications,ChatMessage
+from .models import Listing,Notifications,ChatRoom, Message
 from accounts.models import UserAccount
 from accounts.serializers import UserProfileSerializer
+from django.utils.timesince import timesince
+
+
 
 class ListingSerializer(serializers.ModelSerializer):
     class Meta:
@@ -85,12 +88,56 @@ class ProfileSerializer(serializers.ModelSerializer):
             self.Meta.depth = 0
         else:
             self.Meta.depth = 3       
-        
+ 
+    
+
+class ChatRoomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ChatRoom
+        fields = '__all__'
+
+
 class MessageSerializer(serializers.ModelSerializer):
-    reciever_profile = ProfileSerializer(read_only=True)
-    sender_profile = ProfileSerializer(read_only=True)
+    sender_email = serializers.EmailField(source='sender.email', read_only=True)
+    created = serializers.SerializerMethodField(read_only=True)
+    sender_first_name = serializers.SerializerMethodField(read_only=True)
+    sender_profile_image = serializers.SerializerMethodField(read_only=True)
+    
+    class Meta:
+        model = Message
+        fields = ['room', 'sender_profile_image','sender', 'content', 'timestamp', 'is_seen', 'sender_email', 'created', 'sender_first_name']
+    
+    def get_created(self, obj):
+        return timesince(obj.timestamp)
+    
+    def get_sender_first_name(self, obj):
+        return obj.sender.name if obj.sender else None
+    
+    def get_sender_profile_image(self, obj):
+        return obj.sender.photo.url if obj.sender and obj.sender.photo else None
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserAccount
+        fields = ['id','email', 'name', 'phone', 'age', 'photo', 'description']
+
+
+class ChatRoomListSerializer(serializers.ModelSerializer):
+    unseen_message_count = serializers.SerializerMethodField()
+    members = UserSerializer(many=True)
 
     class Meta:
-        model = ChatMessage
-        fields = ['id','sender', 'reciever','reciever_profile','sender_profile','message', 'is_read', 'date']
-    
+        model = ChatRoom
+        fields = '__all__'
+
+    def get_unseen_message_count(self, obj):
+        user = self.context['request'].user
+        return Message.objects.filter(room=obj, is_seen=False).exclude(sender=user).count()
+
+    def to_representation(self, instance):
+        user = self.context['request'].user
+        members = instance.members.exclude(id=user.id)
+        data = super(ChatRoomListSerializer, self).to_representation(instance)
+        data['members'] = UserSerializer(members, many=True).data
+        return data

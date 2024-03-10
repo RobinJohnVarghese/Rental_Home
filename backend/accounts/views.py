@@ -12,8 +12,6 @@ from datetime import timedelta
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import generics, permissions, status
 from django.utils import timezone
-# from .models import UserToken
-# from .models import AccessToken
 from .models import UserAccount,Order
 import environ
 import razorpay
@@ -27,16 +25,10 @@ User = get_user_model()
 
 
 class SignupView(APIView):
-    # permission_classes = (permissions.AllowAny, )
+
 
     def post(self, request, format=None):
         data = self.request.data
-        # print(data.name, 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
-        # required_fields = ['name', 'email', 'password', 'password2']
-        # for field in required_fields:
-        #     if field not in data:
-        #         return Response({'error': f'{field} is missing'})
-
         name = data.get('name')
         email = data.get('email')
         password = data.get('password')
@@ -49,7 +41,6 @@ class SignupView(APIView):
                 'refresh': str(refresh),
                 'access': str(refresh.access_token),
             }
-            # user = User.objects.create_user(email=email, password=password, name=name)
             user.save()
             return Response(tokens, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -62,10 +53,7 @@ def get_tokens_for_user(user):
         'access': str(refresh.access_token),
     }
     
-# class LoginView(APIView):
-#     def post(self, request, format=None):
-#         data = self.request.data
-    
+ 
 class LoginView(APIView):
     def post(self, request, format=None):
         data = request.data
@@ -75,7 +63,6 @@ class LoginView(APIView):
         user = authenticate(email=email, password=password)
         if user is not None:
             if not user.is_active:
-                print('FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF')
                 return Response({"No active": "This account is not active!!"}, status=status.HTTP_451_UNAVAILABLE_FOR_LEGAL_REASONS)
             data = get_tokens_for_user(user)
             response = JsonResponse({
@@ -98,37 +85,9 @@ class LoginView(APIView):
             csrf.get_token(request)
             response.data = {"Success" : "Login successfully","data":data}
             return response
-            # else:
-                # print('FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF')
-                # return Response({"No active" : "This account is not active!!"}, status=status.HTTP_451_UNAVAILABLE_FOR_LEGAL_REASONS)
         else:
-            print('GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG')
             return Response({"Invalid" : "Invalid username or password!!"}, status=status.HTTP_404_NOT_FOUND)
 
-
-# class LoginView(APIView):
-#     def post(self, request, format=None):
-#         data = request.data
-#         print("RRRRRRRRRRRRRRRRRRRRRRR  data",data)
-#         serializer = UserAccountSerializer(data=data)
-#         print("RRRRRRRRRRRRRRRRRRRRRRR  serializer",serializer)
-#         if serializer.is_valid():
-#             email = data.get('email', None)
-#             password = data.get('password', None)
-#             user = authenticate(email=email, password=password)
-#             if user is not None:
-#                 if user.is_active:
-#                     # Your existing code for handling login
-#                     return Response({"Success": "Login successfully"}, status=status.HTTP_200_OK)
-#                 else:
-#                     print('GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG')
-#                     return Response({"No active": "This account is not active!!"}, status=status.HTTP_451_UNAVAILABLE_FOR_LEGAL_REASONS)
-#             else:
-#                 print('fffffffffffffffffffffffffffffffffffffffffffffff')
-#                 return Response({"Invalid": "Invalid username or password!!"}, status=status.HTTP_404_NOT_FOUND)
-#         else:
-#             print('ssssssssssssssssssssssssssssssssssssssssssssssssssss')
-#             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LogoutView(APIView):
@@ -150,15 +109,11 @@ class LogoutView(APIView):
             path='/',
             domain=settings.SIMPLE_JWT.get('AUTH_COOKIE_DOMAIN', None)  # Set to None if not present
         )
-        # user = request.user
-        # access_token = AccessToken.objects.filter(user=user).first()
-        # if access_token:
-        #     access_token.delete()
+        
 
         return response
     
-# from rest_framework.authentication import TokenAuthentication
-# from rest_framework.permissions import IsAuthenticated   
+  
     
 class UserProfileView(APIView):
 
@@ -169,11 +124,7 @@ class UserProfileView(APIView):
 
     def put(self, request):
         user_profile = request.user
-        print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$",user_profile)
-        print("$$$$$$$$$$$$$$$$$&&&&&&&&&&",request.data)
         serializer = UserProfileSerializer(user_profile, data=request.data)
-        print("###########################",serializer)
-        print("###########################",serializer.is_valid())
         if serializer.is_valid():
             serializer.save()
             return Response({'message': 'Profile updated successfully', 'data': serializer.data})
@@ -190,7 +141,6 @@ class start_paymentView(APIView):
         # request.data is coming from frontend
         amount = request.data.get('amount')
         name = request.data.get('name')
-        print('!!!!!!!!!!!!!!!!!name and amouont',name,amount)
         if not amount or not name:
             return Response({"error": "Amount and Name are required fields"}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -230,7 +180,6 @@ class start_paymentView(APIView):
 class handle_payment_successView(APIView):
     def post(self, request, *args, **kwargs):
         res = json.loads(request.data["response"])
-        print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$",res)
         """res will be:
         {'razorpay_payment_id': 'pay_G3NivgSZLx7I9e', 
         'razorpay_order_id': 'order_G3NhfSWWh5UfjQ', 
@@ -270,7 +219,6 @@ class handle_payment_successView(APIView):
         if check is not None:
             order.isPaid = True
             order.save()
-            print("Redirect to error url or error page")
             return Response({'error': 'Something went wrong'})
 
         # if payment is successful that means check is None then we will turn isPaid=True
@@ -283,34 +231,3 @@ class handle_payment_successView(APIView):
 
         return Response(res_data)
 
-
-# class handle_payment_successView(APIView):
-#     def post(self, request, *args, **kwargs):
-#         # Deserialize the JSON data
-#         res = json.loads(request.data["response"])
-
-#         # Extract relevant data from the response
-#         ord_id = res.get('razorpay_order_id', '')
-#         raz_pay_id = res.get('razorpay_payment_id', '')
-#         raz_signature = res.get('razorpay_signature', '')
-
-#         # Get the corresponding order
-#         order = get_object_or_404(Order, order_payment_id=ord_id)
-
-#         # Verify the payment signature
-#         client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
-#         data = {
-#             'razorpay_order_id': ord_id,
-#             'razorpay_payment_id': raz_pay_id,
-#             'razorpay_signature': raz_signature
-#         }
-#         check = client.utility.verify_payment_signature(data)
-
-#         # If the payment is valid, update the order status to paid
-#         if check is None:
-#             order.isPaid = True
-#             order.save()
-#             res_data = {'message': 'Payment successfully received!'}
-#             return Response(res_data, status=status.HTTP_200_OK)
-#         else:
-#             return Response({'error': 'Invalid payment signature'}, status=status.HTTP_400_BAD_REQUEST)

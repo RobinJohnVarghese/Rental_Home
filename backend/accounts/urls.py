@@ -10,7 +10,5 @@ urlpatterns = [
     path('pay/', start_paymentView.as_view(), name="payment"),
     path('payment/success/', handle_payment_successView.as_view(), name="payment_success")
     
-    
-    # path('user_profile/<int:pk>/', UserProfileView.as_view(), name='user_profile_detail'),
-    # path('api/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
+
 ]

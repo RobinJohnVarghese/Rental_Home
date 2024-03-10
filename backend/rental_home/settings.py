@@ -14,10 +14,8 @@ from pathlib import Path
 import os
 from decouple import config
 from datetime import timedelta
-from rest_framework.authentication import TokenAuthentication
-# from dotenv import load_dotenv
 
-# load_dotenv()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,14 +26,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECRET_KEY =config('SECRET_KEY'),
-SECRET_KEY="django-insecure-5^2sg_$1*whs70+j1kj1*1ozxp9787_zq&)b5#clrs(2@&&h1s"
+SECRET_KEY=config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG =config('DEBUG', default=False, cast=bool),
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
-
+CSRF_TRUSTED_ORIGINS = ['https://rhbackend.robinjohnnvarghese.online','https://www.rhbackend.robinjohnnvarghese.online']
 # Application definition
 
 INSTALLED_APPS = [
@@ -53,19 +51,19 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'accounts',
     'admin_side',
-    # 'realtors',
     'listings',
-    # 'contacts',
-    # 'notification',
-    # 'chatroom',
     
 ]
 
 CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer"
-    }
+    'default': {
+       'BACKEND': 'channels_redis.core.RedisChannelLayer',
+       'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
 }
+
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -76,6 +74,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
 ]
 
 ROOT_URLCONF = 'rental_home.urls'
@@ -91,13 +90,16 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'rental_home.wsgi.application'
+
 ASGI_APPLICATION = "rental_home.asgi.application"
+
+
 
 
 # Database
@@ -106,23 +108,16 @@ ASGI_APPLICATION = "rental_home.asgi.application"
 DATABASES = {
     'default': {
         'ENGINE':'django.db.backends.mysql',
-        # 'NAME':config('NAME'),
-        # 'USER':config('USER'), 
-		# 'PASSWORD': config('PASSWORD'),
-        'NAME':'rental_home',
-        'USER':'root',
-        'PASSWORD':'Robin@123',
+        # 'ENGINE':'django.db.backends.postgresql_psycopg2',
+        'NAME':config('NAME'),
+        'USER':config('USER'), 
+		'PASSWORD': config('PASSWORD'),
 		'HOST':'localhost',
- 		'PORT':'3306',
+ 		'PORT':'5432',
     }
 
 }
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
+
 
 EMAIL_BACKEND=config("EMAIL_BACKEND")
 EMAIL_HOST=config("EMAIL_HOST")
@@ -175,10 +170,10 @@ USE_TZ = True
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'build/static')
-]
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, 'build/static')
+# ]
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -201,16 +196,31 @@ REST_FRAMEWORK = {
     )
 }
 
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "https://main.d38bx2edm2zptt.amplifyapp.com"
     
 ]
 
-CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    'PUT',
+    'DELETE',
+]
 
-# CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_HEADERS = [
+    'Content-Type',
+    'Authorization',
+]
+
+
+
 
 FILE_UPLOAD_PERMISSIONS=0o640
 
@@ -219,8 +229,10 @@ AUTH_USER_MODEL = 'accounts.UserAccount'
 
 
 SIMPLE_JWT = {
-  'ACCESS_TOKEN_LIFETIME': timedelta(minutes=1440),
-  'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+#   'ACCESS_TOKEN_LIFETIME': config('ACCESS_TOKEN_LIFETIME'),
+#   'REFRESH_TOKEN_LIFETIME': config('REFRESH_TOKEN_LIFETIME'),
+    'ACCESS_TOKEN_LIFETIME':timedelta(minutes=1440),
+    'REFRESH_TOKEN_LIFETIME':timedelta(days=1),
   'ROTATE_REFRESH_TOKENS': False,
   'BLACKLIST_AFTER_ROTATION': True,
   'UPDATE_LAST_LOGIN': False,

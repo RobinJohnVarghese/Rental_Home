@@ -1,5 +1,5 @@
 import { Navigate  } from 'react-router-dom';
-import { Header,SearchData,Footer} from '../components';
+import { Header,SearchData} from '../components';
 import { useSelector} from "react-redux";
 
 
@@ -12,7 +12,6 @@ function SearchDataPage({isAuthenticated}) {
         <div>
           <Header />
           <SearchData />
-          {/* <Footer /> */}
         </div>
       );
     }else{

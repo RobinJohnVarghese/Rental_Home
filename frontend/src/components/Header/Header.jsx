@@ -1,7 +1,7 @@
-import React, { useState,Fragment } from "react";
+import React, { useState,Fragment,useEffect } from "react";
 import {Link, NavLink,useNavigate } from 'react-router-dom'
 import "./Header.css";
-import { BiMenuAltRight, BiUser, BiNote, BiLogOut, BiFile, BiTab, BiArchive } from "react-icons/bi";
+import { BiMenuAltRight, BiUser, BiNote, BiLogOut, BiTab, BiArchive } from "react-icons/bi";
 import { getMenuStyles } from "../../utils/common";
 import useHeaderColor from "../../hooks/useHeaderColor";
 import OutsideClickHandler from "react-outside-click-handler";
@@ -11,6 +11,9 @@ import {clearAuth} from "../../redux/userSlice";
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import { baseURL } from '../../api/api';
+import {toast } from 'react-toastify';
+
+
 
 
 const Header = () => {
@@ -22,6 +25,7 @@ const Header = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const headerColor = useHeaderColor();
   const user = useSelector((state)=>state.user);
+  const [notifications, setNotifications] = useState([]);
   const userLogout =()=>{
     Cookies.remove('accessToken');
     localStorage.removeItem('accessToken');
@@ -41,14 +45,10 @@ const Header = () => {
     try {
       const responses = await Promise.all([
         axios.get(`${baseURL}listings/ListingSearchView?query=${searchQuery}`),
-        // axios.get(`${baseURL}listings/ListingSearchView?address=${searchQuery}`),
-        // axios.get(`${baseURL}listings/ListingSearchView?city=${searchQuery}`),
-        // axios.get(`${baseURL}listings/ListingSearchView?state=${searchQuery}`)
       ]);
   
       // Combine all response data into a single array
       let searchData = responses.flatMap(response => response.data);
-      // setSearchResults(responses.data);
        // Filter out duplicates
       searchData = searchData.filter((item, index, self) =>
       index === self.findIndex(t => (
@@ -60,9 +60,7 @@ const Header = () => {
       setSearchResults(searchData);
       
       navigator('/searchdatapage', { state: { searchData, searchQuery } });
-      console.log("#############  header searchResults", searchResults);
-      console.log("#############  Results", searchData);
-      console.log("#############  searchData.length", searchData.length);
+      
       // Return the maximum length of the list
       return searchData.length;
 
@@ -70,44 +68,55 @@ const Header = () => {
       console.error('Error fetching search results:', error);
       // Handle errors
     }
-    // try {
-    //   // const queryParams = ` title=${searchQuery}& address=${searchQuery}& city=${searchQuery}& state=${searchQuery}`;
-
-    //   // Make an API request to your backend
-    //   const response = await axios.get(`${baseURL}listings/ListingSearchView?title=${searchQuery}`);
-    //   setSearchResults(response.data);
-    //   console.log("#############  Results",response.data)
-    // } catch (error) {
-    //   console.error('Error fetching search results:', error);
-    //   // Handle errors
-    // }
-    // try {
-    //   // const queryParams = ` title=${searchQuery}& address=${searchQuery}& city=${searchQuery}& state=${searchQuery}`;
-
-    //   // Make an API request to your backend
-    //   const response = await axios.get(`${baseURL}listings/ListingSearchView?address=${searchQuery}`);
-    //   setSearchResults(response.data);
-    //   console.log("#############  Results",response.data)
-    // } catch (error) {
-    //   console.error('Error fetching search results:', error);
-    //   // Handle errors
-    // }
-    // try {
-    //   // const queryParams = ` title=${searchQuery}& address=${searchQuery}& city=${searchQuery}& state=${searchQuery}`;
-
-    //   // Make an API request to your backend
-    //   const response = await axios.get(`${baseURL}listings/ListingSearchView?city=${searchQuery}`);
-    //   setSearchResults(response.data);
-    //   console.log("#############  Results",response.data)
-    // } catch (error) {
-    //   console.error('Error fetching search results:', error);
-    //   // Handle errors
-    // }
   };
 
   const handleChange = (e) => {
     setSearchQuery(e.target.value);
   };
+
+  useEffect(() => {
+    if (user && user.user) {
+      const websocketProtocol = window.location.protocol === "https:" ? "wss://" : "ws://";
+      const wsURL = `wss://rhbackend.robinjohnnvarghese.online/ws/notification/${user.user.id}/`
+      const socket = new WebSocket(wsURL);
+      console.log(wsURL);
+  
+      socket.onopen = () => {
+        console.log("WebSocket connection established");
+      };
+  
+      socket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        
+  
+        if (data.type === "notification") {
+          console.log("Notification is : ", data.type)
+          console.log('*****', data)
+          // Update the notification state with the new notification
+          setNotifications((prevNotifications) => [
+            ...prevNotifications,
+            data.payload,
+          ]);
+          toast.info(`${data.payload.fromuser_name} sent an interest for ${data.payload.intrested_post_title}`);
+          // toast.info(`New Notification: ${data.payload.message}`);
+  
+          // setNotifications(data.payload);
+        } else if (data.type === "logout") {
+          // dispatch(logout());
+          navigator("/");
+        }
+  
+  
+      };
+  
+      socket.onclose = (event) => {
+        console.log("WebSocket connection closed", event);
+      };
+      return () => {
+        socket.close();
+      };
+    }
+  }, [user, dispatch, navigator]);
 
   return (
     <section className="h-wrapper" style={{ background: headerColor }}>
@@ -117,16 +126,8 @@ const Header = () => {
         
 
         {/* menu */}
-        <OutsideClickHandler
-          onOutsideClick={() => {
-            setMenuOpened(true);
-          }}
-        >
-          <div
-            // ref={menuRef}
-            className="flexCenter h-menu"
-            style={getMenuStyles(menuOpened)}
-          >
+        <OutsideClickHandler onOutsideClick={() => { setMenuOpened(true); }} >
+          <div className="flexCenter h-menu" style={getMenuStyles(menuOpened)} >
 
           <div className="flexCenter search-bar">
             <HiLocationMarker color="var(--blue)" size={25} />
@@ -143,6 +144,7 @@ const Header = () => {
               {/* <NavLink className='navbar__bottom__item' onClick={checkuser1}>Check</NavLink> */}
               {user.isAuthenticated ?  (
                 // <Link className='navbar__bottom__item' onClick={userLogout}>Logout</Link>
+                
                 <div className="navbar__bottom__item navbar__bottom__dropdown" onClick={toggleDropdown}>
                 <BiUser size={30} />
                 {showDropdown && (
@@ -154,11 +156,7 @@ const Header = () => {
                     <div>
                         <BiNote size={20} />
                         <NavLink to="/my-posts">My Posts</NavLink>
-                    </div>
-                    {/* <div>
-                        <BiFile size={20} />
-                        <NavLink to="/notificatons">Notifications</NavLink>
-                    </div> */}
+                    </div> 
                     <div>
                         <BiTab size={20} />
                         <NavLink to="/membership">MemberShip</NavLink>
@@ -194,7 +192,9 @@ const Header = () => {
         </div>
       </div>
     </section>
+    
   );
+  
 };
 
 export default Header;

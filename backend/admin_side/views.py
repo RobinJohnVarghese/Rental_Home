@@ -26,14 +26,10 @@ class AdminLoginView(APIView):
     
     def post(self, request, format=None):
         email = request.data.get('email')
-
         password = request.data.get('password')
-        print('******email******', email)
-
-
+        print("user name : ", email, "password : ", password)
         user = authenticate(request, email=email, password=password)
-        print('***********', user)
-
+        print("authenticate : ", user)
         if user is not None and user.is_staff:
             refresh = RefreshToken.for_user(user)
             tokens = {
@@ -46,7 +42,6 @@ class AdminLoginView(APIView):
                     # Add other user details as needed
                 }
             }
-            print("Tokens",tokens)
             return Response(tokens, status=status.HTTP_200_OK)
         else:
             return Response({'error': 'Invalid Credentials'}, status=status.HTTP_401_UNAUTHORIZED)
@@ -55,14 +50,11 @@ class AdminLoginView(APIView):
 class UserListView(APIView):
     def get(self, request, format=None):
         users = UserAccount.objects.all()
-        # permission_classes = (permissions.AllowAny, )
         serializer = AdminSerializer(users, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     
 class UserBlockView(APIView):
-    # authentication_classes = [TokenAuthentication]
-    # permission_classes = [IsAuthenticated]
     def post(self, request,user_id, format=None):
         user = UserAccount.objects.get(id=user_id)
         user.is_active = False
@@ -73,8 +65,6 @@ class UserBlockView(APIView):
 
 
 class UserUnblockView(APIView):
-    # authentication_classes = [TokenAuthentication]
-    # permission_classes = [IsAuthenticated]
     def post(self, request, user_id, format=None):
         user = UserAccount.objects.get(id=user_id)
         user.is_active = True
@@ -85,7 +75,6 @@ class UserUnblockView(APIView):
 
 class UserSearchView(APIView):
     def get(self, request, *args, **kwargs):
-        print('request:', request)
         try:
             search_term = request.query_params.get('search', '')
             users = UserAccount.objects.filter(
@@ -93,9 +82,7 @@ class UserSearchView(APIView):
                 Q(email__icontains=search_term)
 
             )
-            print('USERS:', users)
             serializer = UserRegistrationSerializer(users, many=True)
-            print("serializer serializer ", serializer)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -107,22 +94,13 @@ class NoPagination(PageNumberPagination):
 
 class PostManagementView(ListAPIView):
     queryset = Listing.objects.all().order_by('-list_date')
-    # print("^^^^^^^^^^^^^^^^^^^^^^^^^FFFFFFFFFFFFFFFFFF^  queryset",queryset)
     permission_classes = (permissions.AllowAny, )
     serializer_class = AdminPostSerializer
     lookup_field = 'slug'
     pagination_class = NoPagination
-    
-# class PostManagementBlockedView(ListAPIView) :
-#     queryset = Listing.objects.filter(is_published=False) 
-#     permission_classes = (permissions.AllowAny, )
-#     serializer_class = ListingSerializer
-#     lookup_field = 'slug'
-#     pagination_class = NoPagination 
+
     
 class PostBlockView(APIView):
-    # authentication_classes = [TokenAuthentication]
-    # permission_classes = [IsAuthenticated]
     def post(self, request, Listing_id, format=None):
         try:
             listing = Listing.objects.get(id=Listing_id)
@@ -140,8 +118,6 @@ class PostBlockView(APIView):
 
 
 class PostUnblockView(APIView):
-    # authentication_classes = [TokenAuthentication]
-    # permission_classes = [IsAuthenticated]
     def post(self, request, Listing_id, format=None):
         try:
             listing = Listing.objects.get(id=Listing_id)

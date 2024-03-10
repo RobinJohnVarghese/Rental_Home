@@ -15,10 +15,7 @@ class  UserRegistrationSerializer(serializers.ModelSerializer):
         user = UserAccount.objects.create_user(**validated_data)
         return user 
     
-# class UserAccountSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = UserAccount
-#         fields = '__all__'
+
     
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
@@ -38,18 +35,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
         return value
     
-    
-# class UserProfileUpdateSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = UserAccount
-#         fields = ['id','email', 'name', 'phone', 'age', 'photo', 'description']  # Include all fields including photo
-
-#     def update(self, instance, validated_data):
-#         # Exclude 'photo' from validated_data if it is present but None
-#         if 'photo' in validated_data and validated_data['photo'] is None:
-#             del validated_data['photo']
-
-#         return super().update(instance, validated_data)
 
 
 class OrderSerializer(serializers.ModelSerializer):

@@ -1,7 +1,6 @@
 import React, { useEffect , useState} from 'react'
 import { Grid, Paper, Typography } from '@mui/material';
-// import { sliderSettings } from "../../utils/common";
-import { Swiper, SwiperSlide, useSwiper } from "swiper/react";
+import { Swiper, } from "swiper/react";
 
 
 
@@ -21,8 +20,6 @@ function AdminHome() {
         const response = await fetch(url);
         const data = await response.json();
         setArticles(data.articles);
-
-        console.log(data);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -105,20 +102,6 @@ function AdminHome() {
 }
 
 export default AdminHome;
-
-// const SlideNextButton = ({ onPrev, onNext }) => {
-//   const swiper = useSwiper();
-//   return (
-//     <div className="flexCenter r-buttons">
-//       <button onClick={() => swiper.slidePrev()} className="r-prevButton">
-//         &lt;
-//       </button>
-//       <button onClick={() => swiper.slideNext()} className="r-nextButton">
-//         &gt;
-//       </button>
-//     </div>
-//   );
-// };
 
 const SlideNextButton = ({ onPrev, onNext }) => {
   return (

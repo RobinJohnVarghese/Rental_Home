@@ -9,22 +9,19 @@ https://docs.djangoproject.com/en/4.2/howto/deployment/asgi/
 
 import os
 import django
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'rental_home.settings')
 django.setup()
 from channels.routing import ProtocolTypeRouter, URLRouter
 from django.core.asgi import get_asgi_application
-# from .channelsmiddleware import JwtAuthMiddleware
 from channels.security.websocket import AllowedHostsOriginValidator
-from listings.routing import websocket_urlpatterns
-# from listings import routing as routingchat
-# from listings import routing as routingNotification
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'rental_home.settings')
+
 
 from listings.routing import websocket_urlpatterns as notification_websocket_urlpatterns
 
-django_asgi_app = get_asgi_application()
+django_asgi_application = get_asgi_application()
 
 application = ProtocolTypeRouter({
-    "http": django_asgi_app,
-    'websocket': URLRouter(notification_websocket_urlpatterns)
+    "http": django_asgi_application,
+    'websocket': AllowedHostsOriginValidator(URLRouter(notification_websocket_urlpatterns))
     # Just HTTP for now. (We can add other protocols later.)
 })

@@ -1,7 +1,5 @@
-// import {Fragment}  from 'react';
 import AdminHeader from '../components/AdminHeader/AdminHeader';
 import AdminPosts from '../components/AdminPosts/AdminPosts';
-// import AdminFooter from '../components/AdminFooter/AdminFooter'
 import { useSelector} from "react-redux";
 import { Navigate  } from 'react-router-dom';
 
@@ -9,16 +7,6 @@ import { Navigate  } from 'react-router-dom';
 
 
 function AdminPostManagementPage() {
-  // return (
-  //   <Fragment>
-        
-  //       <div>
-  //         <AdminHeader/>
-  //         <AdminPosts/> 
-  //         {/* <AdminFooter/>  */}
-  //       </div>      
-  //   </Fragment>
-  // )
 
   const user = useSelector((state)=>state.admin);
   // Check if the user is authenticated

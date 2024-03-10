@@ -18,13 +18,6 @@ import {
 const MyPostDetail = (props) => {
   const user = useSelector((state)=>state.user);
   const [successMessage, setSuccessMessage] = useState('');
-  // const [selectedFile, setSelectedFile] = useState(null);
-  // const [selectedFile1, setSelectedFile1] = useState(null);
-  // const [selectedFile2, setSelectedFile2] = useState(null);
-  // const [selectedFile3, setSelectedFile3] = useState(null);
-  // const [selectedFile4, setSelectedFile4] = useState(null);
-  // const [selectedFile5, setSelectedFile5] = useState(null);
-
   const param = useParams();
   const slug =param.slug
  
@@ -50,76 +43,7 @@ const MyPostDetail = (props) => {
     list_date: new Date().toISOString(),
     // Add other fields as needed
   });
-  console.log('formData from listing',listing)
-
-  // const handleFileChange = (event) => {
-  //   const formData = new FormData();
-  //   formData.append('photo_main', selectedFile);
-  //   console.log('Selected file:', selectedFile);
-  //   const file = event.target.files[0];
-  //   console.log('Selected event.target.files[0]:',event.target.files[0]);
-  //   // Update selected file
-  //   setSelectedFile(file);
-  //   console.log('Selected file:',file);
-    
-  //   };
-  // const handleFileChange1 = (event) => {
-  //   const formData = new FormData();
-  //   formData.append('photo_1', selectedFile1);
-  //   console.log('Selected file 1:', selectedFile1);
-  //   const file = event.target.files[0];
-  //   console.log('Selected event.target.files[0] 1:',event.target.files[0]);
-  //   // Update selected file
-  //   setSelectedFile1(file);
-  //   console.log('Selected file 1:',file);
-    
-  //   };
-  // const handleFileChange2 = (event) => {
-  //   const formData = new FormData();
-  //   formData.append('photo_2', selectedFile2);
-  //   console.log('Selected file 2:', selectedFile2);
-  //   const file = event.target.files[0];
-  //   console.log('Selected event.target.files[0]: 2',event.target.files[0]);
-  //   // Update selected file
-  //   setSelectedFile2(file);
-  //   console.log('Selected file 2: ',file);
-    
-  //   };
-  // const handleFileChange3 = (event) => {
-  //   const formData = new FormData();
-  //   // formData.append('photo_3', selectedFile3);
-  //   // console.log('Selected file 3:', selectedFile3);
-  //   const file = event.target.files[0];
-  //   console.log('Selected event.target.files[0] 3:',event.target.files[0]);
-  //   // Update selected file
-  //   setSelectedFile3(file);
-  //   console.log('Selected file 3:',file);
-  //   formData.append('photo_3', file);
-  //   console.log('Selected file 3:', file);
-    
-  //   };
-  // const handleFileChange4 = (event) => {
-  //   const formData = new FormData();
-  //   formData.append('photo_4', selectedFile4);
-  //   console.log('Selected file 4:', selectedFile4);
-  //   const file = event.target.files[0];
-  //   console.log('Selected event.target.files[0] 4:',event.target.files[0]);
-  //   // Update selected file
-  //   setSelectedFile4(file);
-  //   console.log('Selected file 4:',file);
-    
-  //   };
-  // const handleFileChange5 = (event) => {
-  //   const formData = new FormData();
-  //   formData.append('photo_5', selectedFile5);
-  //   console.log('Selected file 5:', selectedFile5);
-  //   const file = event.target.files[0];
-  //   console.log('Selected event.target.files[0] 5:',event.target.files[0]);
-  //   // Update selected file
-  //   setSelectedFile5(file);
-  //   console.log('Selected file 5:',file);
-    
-  //   };
+  // console.log('formData from listing',listing)
 
 useEffect(() => {
     const fetchData = async () => {
@@ -162,31 +86,13 @@ const handleChange = (event) => {
     }));
   };
 
-//   const handlefileChanges = (event) => {
-//     const { name, value } = event.target;
-
-//     // Check if the field being updated is a photo field
-//     if (name.startsWith('photo_')) {
-//         // Extract the photo number from the field name
-//         const photoNumber = parseInt(name.split('_')[1]);
-
-//         // Update the corresponding photo property
-//         setListing((prevProfile) => ({
-//             ...prevProfile,
-//             [`photo_${photoNumber}`]: value,
-//         }));
-//     } else {
-//         // If it's not a photo field, update as usual
-//         setListing((prevProfile) => ({
-//             ...prevProfile,
-//             [name]: value,
-//         }));
-//     }
-// };
-
-
-
-// console.log("$$$$$$$$$$$$$$$$$$$$$ listing.photo_main",listing.photo_main)
+  function ensureHttps(url) {
+    if (url.startsWith('http://')) {
+      return url.replace(/^http:\/\//i, 'https://');
+    }
+    return url;
+  }
+  
   const handleUpdate = async () => {
     try {
       console.log("************* Entered to try ***********************")
@@ -209,53 +115,11 @@ const handleChange = (event) => {
       formData.append('open_house', listing.open_house);
       formData.append('is_published', listing.is_published);
       formData.append('list_date', listing.list_date);
-      // formData.append('photo_main', listing.photo_main);
-      // formData.append('photo_1', listing.photo_1);
-      // formData.append('photo_2', listing.photo_2);
-      // formData.append('photo_3', listing.photo_3);
-      // formData.append('photo_4', listing.photo_4);
-      // formData.append('photo_5', listing.photo_5);
-      // if (selectedFile) {
-      //   formData.append('photo_main', selectedFile, selectedFile.name);
-      //   console.log("$$$$$$$$$$$$$$$'photo_main', selectedFile",selectedFile)
-      // }else{
-      //   formData.append('photo_main', listing.photo_main);
-      //   console.log("$$$$$$$$$$$$$$$'photo_main', listing.photo_main",listing.photo_main)
-      // }
-      // if (selectedFile1) {
-      //   formData.append('photo_1', selectedFile1, selectedFile1.name);
-      // }else{
-      //   formData.append('photo_1', listing, listing.name);
-      // }
-      // if (selectedFile2) {
-      //   formData.append('photo_2', selectedFile2, selectedFile2.name);
-      // }else{
-      //   formData.append('photo_2', listing, listing.name);
-      // }
-      // if (selectedFile3) {
-      //   formData.append('photo_3', selectedFile3, selectedFile3.name);
-      // }else{
-      //   formData.append('photo_3', listing, listing.name);
-      // }
-      // if (selectedFile4) {
-      //   formData.append('photo_4', selectedFile4, selectedFile4.name);
-      // }else{
-      //   formData.append('photo_4', listing, listing.name);
-      // }
-      // if (selectedFile5) {
-      //   formData.append('photo_5', selectedFile2, selectedFile2.name);
-      // }else{
-      //   formData.append('photo_5', listing, listing.name);
-      // }
-
-      // const formData = new FormData();
-      // Object.keys(listing).forEach((key) => {
-      //   // Append all form fields to the FormData object
-      //   formData.append(key, listing[key]);
-      // });
+      
       if (listing.photo_main instanceof File) {
         // If it's a File object (i.e., a newly uploaded file), append it directly
         formData.append('photo_main', listing.photo_main);
+        
       } else if (typeof listing.photo_main === 'string') {
         // If it's a string (i.e., an existing file URL), fetch the file and append it
         const response = await fetch(listing.photo_main);
@@ -323,9 +187,7 @@ const handleChange = (event) => {
         },
       }
     );
-    console.log("EWEWEWEFWEWEWEWEWE post",formData)
-  
-      console.log('Post updated successfully:', response.data);
+    
       setSuccessMessage('Post updated successfully');
 
       // Clear the success message after a few seconds (adjust as needed)
@@ -360,7 +222,7 @@ const handleChange = (event) => {
         });
   
         console.log('Post deleted successfully:', response.data);
-        // Navigate to the sign-in page (assuming your sign-in page route is '/signin')
+        
         window.location.href = '/my-posts';
       } catch (error) {
         console.error('Error deleting profile:', error);
@@ -602,13 +464,15 @@ const handleChange = (event) => {
                                     listing.photo_main ? (
                                         <div className='listingdetail__display'>
                                             {/* <img className='listingdetail__display__image' src={selectedFile ? URL.createObjectURL(selectedFile):listing.photo_main */}
-                                            <img className='listingdetail__display__image' src={typeof listing.photo_main === 'string' ? listing.photo_main : URL.createObjectURL(listing.photo_main)} alt='' />
+                                            <img className='listingdetail__display__image' src={typeof listing.photo_main === 'string' ? ensureHttps(listing.photo_main) : URL.createObjectURL(listing.photo_main)} alt='' />
+                                            {/* <img className='listingdetail__display__image' src={typeof listing.photo_main === 'string' ? listing.photo_main : URL.createObjectURL(listing.photo_main)} alt='' /> */}
+
                                               {/* //  `${imageBaseUrl}${listing.photo_main}` */}
                                         </div>
                                     ) : null
                                 }
                             </div>
-                        </div>
+                        </div>                             
                         </MDBCol>
 
                         <MDBCol col='6'>
@@ -627,7 +491,9 @@ const handleChange = (event) => {
                                     listing.photo_1 ? (
                                         <div className='listingdetail__display'>
                                             {/* <img className='listingdetail__display__image' src={selectedFile1 ? URL.createObjectURL(selectedFile1): listing.photo_1} alt='' /> */}
-                                            <img className='listingdetail__display__image' src={typeof listing.photo_1 === 'string' ? listing.photo_1 : URL.createObjectURL(listing.photo_1)} alt='' />
+                                            <img className='listingdetail__display__image' src={typeof listing.photo_1 === 'string' ? ensureHttps(listing.photo_1) : URL.createObjectURL(listing.photo_1)} alt='' />
+
+                                            {/* <img className='listingdetail__display__image' src={typeof listing.photo_1 === 'string' ? listing.photo_1 : URL.createObjectURL(listing.photo_1)} alt='' /> */}
                                         </div>
                                     ) : null
                                 }
@@ -653,7 +519,9 @@ const handleChange = (event) => {
                                     listing.photo_2 ? (
                                         <div className='listingdetail__display'>
                                             {/* <img className='listingdetail__display__image' src={selectedFile2 ? URL.createObjectURL(selectedFile2):listing.photo_2} alt='' /> */}
-                                            <img className='listingdetail__display__image' src={typeof listing.photo_2 === 'string' ? listing.photo_2 : URL.createObjectURL(listing.photo_2)} alt='' />
+                                            <img className='listingdetail__display__image' src={typeof listing.photo_2 === 'string' ? ensureHttps(listing.photo_2) : URL.createObjectURL(listing.photo_2)} alt='' />
+
+                                            {/* <img className='listingdetail__display__image' src={typeof listing.photo_2 === 'string' ? listing.photo_2 : URL.createObjectURL(listing.photo_2)} alt='' /> */}
                                         </div>
                                     ) : null
                                 }
@@ -677,7 +545,9 @@ const handleChange = (event) => {
                                     listing.photo_3 ? (
                                         <div className='listingdetail__display'>
                                             {/* <img className='listingdetail__display__image' src={selectedFile3 ? URL.createObjectURL(selectedFile3):listing.photo_3} alt='' /> */}
-                                            <img className='listingdetail__display__image' src={typeof listing.photo_3 === 'string' ? listing.photo_3 : URL.createObjectURL(listing.photo_3)} alt='' />
+                                            <img className='listingdetail__display__image' src={typeof listing.photo_3 === 'string' ? ensureHttps(listing.photo_3) : URL.createObjectURL(listing.photo_3)} alt='' />
+
+                                            {/* <img className='listingdetail__display__image' src={typeof listing.photo_3 === 'string' ? listing.photo_3 : URL.createObjectURL(listing.photo_3)} alt='' /> */}
                                         </div>
                                     ) : null
                                 }
@@ -703,7 +573,9 @@ const handleChange = (event) => {
                                     listing.photo_4 ? (
                                         <div className='listingdetail__display'>
                                             {/* <img className='listingdetail__display__image' src={selectedFile4 ? URL.createObjectURL(selectedFile4):listing.photo_4} alt='' /> */}
-                                            <img className='listingdetail__display__image' src={typeof listing.photo_4 === 'string' ? listing.photo_4 : URL.createObjectURL(listing.photo_4)} alt='' />
+                                            <img className='listingdetail__display__image' src={typeof listing.photo_4 === 'string' ? ensureHttps(listing.photo_4) : URL.createObjectURL(listing.photo_4)} alt='' />
+
+                                            {/* <img className='listingdetail__display__image' src={typeof listing.photo_4 === 'string' ? listing.photo_4 : URL.createObjectURL(listing.photo_4)} alt='' /> */}
 
                                         </div>
                                     ) : null
@@ -728,7 +600,9 @@ const handleChange = (event) => {
                                     listing.photo_5 ? (
                                         <div className='listingdetail__display'>
                                             {/* <img className='listingdetail__display__image' src={selectedFile5 ? URL.createObjectURL(selectedFile5):listing.photo_5} alt='' /> */}
-                                            <img className='listingdetail__display__image' src={typeof listing.photo_5 === 'string' ? listing.photo_5 : URL.createObjectURL(listing.photo_5)} alt='' />
+                                            <img className='listingdetail__display__image' src={typeof listing.photo_5 === 'string' ? ensureHttps(listing.photo_5) : URL.createObjectURL(listing.photo_5)} alt='' />
+
+                                            {/* <img className='listingdetail__display__image' src={typeof listing.photo_5 === 'string' ? listing.photo_5 : URL.createObjectURL(listing.photo_5)} alt='' /> */}
 
                                         </div>
                                     ) : null

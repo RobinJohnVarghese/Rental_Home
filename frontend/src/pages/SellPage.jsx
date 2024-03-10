@@ -1,5 +1,5 @@
 import { Navigate  } from 'react-router-dom';
-import { Header,Sell,Footer} from '../components';
+import { Header,Sell} from '../components';
 import { useSelector} from "react-redux";
 
 
@@ -11,7 +11,7 @@ function SellPage({ isAuthenticated }) {
       <div>
         <Header/>
         <Sell/> 
-        {/* <Footer/>  */}
+       
       </div>        
     )  
   }else{

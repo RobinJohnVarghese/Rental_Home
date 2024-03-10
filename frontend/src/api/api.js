@@ -1,7 +1,12 @@
 import axios from 'axios';
 
-const baseURL = 'http://localhost:8000/api/';
-const imageBaseUrl = 'http://localhost:8000'
+// const baseURL = 'http://localhost:8000/api/';
+// const imageBaseUrl = 'http://localhost:8000'
+
+const baseURL = 'https://rhbackend.robinjohnnvarghese.online/api/';
+const imageBaseUrl = 'https://rhbackend.robinjohnnvarghese.online';
+
+
 
 const axiosInstance = axios.create({
     baseURL: baseURL,

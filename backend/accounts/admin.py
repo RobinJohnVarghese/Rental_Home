@@ -47,13 +47,3 @@ class OrderAdmin(admin.ModelAdmin):
 admin.site.register(Order, OrderAdmin)
 
 
-# class ChatMessageAdmin(admin.ModelAdmin):
-#     list_editable = ['is_read', 'message']
-#     list_display = ['id','user','sender', 'reciever', 'is_read', 'message','date']
-#     list_display_links = ('id', 'user')
-# admin.site.register( ChatMessage,ChatMessageAdmin) 
-
-
-# admin.site.register(Membership)
-
-# admin.site.register(Order)

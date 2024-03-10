@@ -3,7 +3,6 @@ import axios from 'axios';
 import { baseURL } from '../../api/api';
 import { useSelector, } from "react-redux";
 import  './Sell.css'
-import {useNavigate} from 'react-router-dom'
 import {
   MDBBtn,
   MDBContainer,
@@ -23,7 +22,6 @@ import {
 const Sell = () => {
   const user = useSelector((state)=>state.user);
   console.log("################ User",user.user.id)
-  // const navigator = useNavigate();
   const [successMessage, setSuccessMessage] = useState('');
   const [slugError, setSlugError] = useState('');
   const [titleError, setTitleError] = useState('');
@@ -150,13 +148,6 @@ const Sell = () => {
       return;
       }
 
-      // Validate that all required fields are filled
-      // if (!formData.title || !formData.address || !formData.slug || !formData.city || !formData.state 
-      //   || !formData.zipcode || !formData.bedrooms || !formData.bathrooms || !formData.photo_main  ) {
-      //   // setEmptyError("Please fill in all required fields");
-      //   console.error("Please fill in all required fields");
-      //   return;
-      // }
   
       // Create a FormData object to send the data including files
       const formDataToSend = new FormData();
@@ -164,17 +155,13 @@ const Sell = () => {
         // Append all form fields to the FormData object
         formDataToSend.append(key, formData[key]);
       });
-      console.log("&&&&&&&&&&&&& form Data",formDataToSend)
       // Make a POST request to your backend API
       const response = await axios.post(`${baseURL}listings/create_listing/`,formDataToSend, {
         
         headers: {
           Accept: 'application/json',
-          // body: formDataToSend,
           'Content-Type' :'multipart/form-data',
-          Authorization: `Bearer ${user.accessToken}`, 
-          // 'Authorization': `Bearer ${user.accessToken}`,
-          // 'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${user.accessToken}`,
         },
       });
   
@@ -220,15 +207,15 @@ const Sell = () => {
                         minHeight: '100vh',
                     }}>
             <MDBCard className=' mx-5 mb-5  p-5 shadow-5 w-75'style={{background: 'hsla(0, 0%, 100%, 0.8)',backdropFilter: 'blur(30px)',height: "fit-content",}}>
-            {/* <form onSubmit={handleSubmit}> */}
+            
                 <MDBCardBody className='p-5 text-center'>
                     <h2 className='fw-bold mb-5'>Create New Post</h2>
                     {successMessage && (<div className="alert alert-success" role="alert">{successMessage}</div>)}
                     <MDBRow>
                         <MDBCol col='6'>
+                        <label className="form-label">Realtor</label>
                             <MDBInput
                               wrapperClass='mb-4'
-                              label='Realtor'
                               name='realtor_id'
                               type='text'
                               value={`${user.user.id} - ${user.user.name}`}
@@ -238,9 +225,9 @@ const Sell = () => {
                         </MDBCol>
 
                         <MDBCol col='6'>
+                        <label className="form-label">Slug</label>
                             <MDBInput
                               wrapperClass='mb-4'
-                              label='Slug'
                               name='slug'
                               type='text'
                               value={formData.slug}
@@ -253,9 +240,9 @@ const Sell = () => {
 
                     <MDBRow>
                         <MDBCol col='6'>
+                        <label className="form-label">Title</label>
                             <MDBInput
                               wrapperClass='mb-4'
-                              label='Title'
                               name='title'
                               type='text'
                               value={formData.title}
@@ -265,9 +252,9 @@ const Sell = () => {
                         </MDBCol>
 
                         <MDBCol col='6'>
+                        <label className="form-label">Address</label>
                             <MDBInput
                               wrapperClass='mb-4'
-                              label='Address'
                               name='address'
                               type='text'
                               value={formData.address}
@@ -279,9 +266,9 @@ const Sell = () => {
 
                     <MDBRow>
                         <MDBCol col='6'>
+                        <label className="form-label">City</label>
                             <MDBInput
                               wrapperClass='mb-4'
-                              label='City'
                               name='city'
                               type='text'
                               value={formData.city}
@@ -291,9 +278,9 @@ const Sell = () => {
                         </MDBCol>
 
                         <MDBCol col='6'>
+                        <label className="form-label">State</label>
                             <MDBInput
                               wrapperClass='mb-4'
-                              label='State'
                               name='state'
                               type='text'
                               value={formData.state}
@@ -305,9 +292,9 @@ const Sell = () => {
 
                     <MDBRow>
                         <MDBCol col='6'>
+                        <label className="form-label">Zipcode</label>
                             <MDBInput
                               wrapperClass='mb-4'
-                              label='Zipcode'
                               name='zipcode'
                               type='text'
                               value={formData.zipcode}
@@ -317,9 +304,9 @@ const Sell = () => {
                         </MDBCol>
 
                         <MDBCol col='6'>
+                        <label className="form-label">Price</label>
                             <MDBInput
                               wrapperClass='mb-4'
-                              label='Price'
                               name='price'
                               type='text'
                               value={formData.price}
@@ -331,9 +318,9 @@ const Sell = () => {
 
                     <MDBRow>
                         <MDBCol col='6'>
+                        <label className="form-label">Bedrooms</label>
                             <MDBInput
                               wrapperClass='mb-4'
-                              label='Bedrooms'
                               name='bedrooms'
                               type='text'
                               value={formData.bedrooms}
@@ -343,9 +330,9 @@ const Sell = () => {
                         </MDBCol>
 
                         <MDBCol col='6'>
+                        <label className="form-label">Bathrooms</label>
                             <MDBInput
                               wrapperClass='mb-4'
-                              label='Bathrooms'
                               name='bathrooms'
                               type='text'
                               value={formData.bathrooms}
@@ -357,9 +344,9 @@ const Sell = () => {
 
                     <MDBRow>
                         <MDBCol col='6'>
+                        <label className="form-label">Sqft</label>
                             <MDBInput
                               wrapperClass='mb-4'
-                              label='Sqft'
                               name='sqft'
                               type='text'
                               value={formData.sqft}
@@ -370,11 +357,11 @@ const Sell = () => {
 
                         <MDBCol col='6'>
                             <div class="form-outline mb-4">
+                                <label className="form-label">Sale Type</label>
                                 <select className="form-control" name="sale_type" value={formData.sale_type} onChange={handleChange}>
                                     <option value="For Rent">For Rent</option>
                                     <option value="For Sale">For Sale</option>
                                 </select>
-                                <label className="form-label">Sale Type</label>
                                 <div class="form-notch">
                                     <div class="form-notch-leading"></div>
                                     <div class="form-notch-middle" style={{width:"32.8px"}}></div>
@@ -387,12 +374,12 @@ const Sell = () => {
                     <MDBRow>
                         <MDBCol col='6'>
                             <div class="form-outline mb-4">
+                                    <label className="form-label">Home Type</label>
                                     <select className="form-control" name="home_type" value={formData.home_type} onChange={handleChange}>
                                         <option value="House">House</option>
                                         <option value="Condo">Condo</option>
                                         <option value="Townhouse">Townhouse</option>
                                     </select>
-                                    <label className="form-label">Home Type</label>
                                     <div class="form-notch">
                                         <div class="form-notch-leading"></div>
                                         <div class="form-notch-middle" style={{width:"32.8px"}}></div>
@@ -403,11 +390,11 @@ const Sell = () => {
 
                         <MDBCol col='6'>
                             <div class="form-outline mb-4">
+                                    <label className="form-label">Open House</label>
                                     <select className="form-control" name="open_house" value={formData.open_house} onChange={handleChange}>
                                         <option value={false}>False</option>
                                         <option value={true}>True</option>
                                     </select>
-                                    <label className="form-label">Open House</label>
                                     <div class="form-notch">
                                         <div class="form-notch-leading"></div>
                                         <div class="form-notch-middle" style={{width:"32.8px"}}></div>
@@ -419,9 +406,9 @@ const Sell = () => {
 
                     <MDBRow>
                         <MDBCol col='6'>
+                        <label className="form-label">Cover Photo</label>
                           <MDBInput
                             wrapperClass='mb-4'
-                            label='Cover Photo'
                             name='photo_main'
                             type='file'
                             accept='image/*'
@@ -431,9 +418,9 @@ const Sell = () => {
                         </MDBCol>
 
                         <MDBCol col='6'>
+                        <label className="form-label">Photo_1</label>
                           <MDBInput
                             wrapperClass='mb-4'
-                            label='Photo 1'
                             name='photo_1'
                             type='file'
                             accept='image/*'
@@ -444,9 +431,9 @@ const Sell = () => {
 
                     <MDBRow>
                         <MDBCol col='6'>
+                        <label className="form-label">Photo_2</label>
                           <MDBInput
                             wrapperClass='mb-4'
-                            label='Photo 2'
                             name='photo_2'
                             type='file'
                             accept='image/*'
@@ -455,9 +442,9 @@ const Sell = () => {
                         </MDBCol>
 
                         <MDBCol col='6'>
+                        <label className="form-label">Photo_3</label>
                           <MDBInput
                             wrapperClass='mb-4'
-                            label='Photo 3'
                             name='photo_3'
                             type='file'
                             accept='image/*'
@@ -468,9 +455,9 @@ const Sell = () => {
 
                     <MDBRow>
                         <MDBCol col='6'>
+                        <label className="form-label">Photo_4</label>
                           <MDBInput
                             wrapperClass='mb-4'
-                            label='Photo 4'
                             name='photo_4'
                             type='file'
                             accept='image/*'
@@ -479,9 +466,9 @@ const Sell = () => {
                         </MDBCol>
 
                         <MDBCol col='6'>
+                        <label className="form-label">Photo_5</label>
                           <MDBInput
                             wrapperClass='mb-4'
-                            label='Photo 5'
                             name='photo_5'
                             type='file'
                             accept='image/*'
@@ -491,9 +478,9 @@ const Sell = () => {
                     </MDBRow>
                     <MDBRow>
                         <MDBCol col='6'>
+                        <label className="form-label">Description</label>
                           <MDBTextArea
                             wrapperClass='mb-4'
-                            label='Description'
                             name='description'
                             type='text'
                             value={formData.description}
@@ -511,15 +498,10 @@ const Sell = () => {
                     >
                       Register
                     </MDBBtn>
-{/* 
-                  <div className="form-group-description">
-                  <button className="form-submit" type="submit">
-                    Submit
-                  </button>
-                  </div> */}
+
 
                 </MDBCardBody>
-                {/* </form> */}
+               
             </MDBCard>
             </div>
         </div>

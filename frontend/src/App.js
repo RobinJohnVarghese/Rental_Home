@@ -1,14 +1,35 @@
 import React from 'react'
 import {BrowserRouter as Router,Route, Routes} from "react-router-dom"
 import { HomePage, LoginPage, SignUpPage, ResidenciesPage, SellPage, ProfilePage,DetailsPage,MyPostPage ,NotificationPage ,MembershipPage , NotFound
-  ,AdminHomePage,AdminLoginPage, AdminUserManagementPage, AdminPostManagementPage,MyPostDetailPage,SearchDataPage,MessageDetailsPage,MessagePage } from './pages';
+  ,AdminHomePage,AdminLoginPage, AdminUserManagementPage, AdminPostManagementPage,MyPostDetailPage,SearchDataPage,MessagePage } from './pages';
 import "./App.css";
 import { AdminUserManagement } from './components';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
 
 function App() {
+
+  
   return (
-    <Router>
+
+  <div>
+   <ToastContainer
+    position="top-right"
+    autoClose={5000}
+    hideProgressBar={false}
+    newestOnTop={false}
+    closeOnClick
+    rtl={false}
+    pauseOnFocusLoss
+    draggable
+    pauseOnHover
+    theme="colored"
+    />
+    <Router> 
         <Routes>
+          
             
             <Route path="/" element={<HomePage/>}/>
             <Route path="/login" element={<LoginPage/>}/>
@@ -23,7 +44,7 @@ function App() {
             <Route path="/membership" element={<MembershipPage/>}/>
             <Route path="/searchdatapage" element={<SearchDataPage/>}/>
             <Route path="/message" element={<MessagePage/>}/>
-            <Route path="/messagedetails/:id" element={<MessageDetailsPage/>}/>
+           
 
 
             <Route path="/admin" element={<AdminHomePage/>}/>
@@ -33,9 +54,11 @@ function App() {
             <Route path="/admin-postmanagement" element={<AdminPostManagementPage/>}/>
             
             <Route path="*" element={<NotFound/>}/>
-        
+            
+            
         </Routes>
         </Router> 
+        </div>
   )
 }
 

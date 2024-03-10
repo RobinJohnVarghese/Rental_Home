@@ -63,7 +63,6 @@ const SignUp = () => {
         localStorage.setItem('refreshToken', response.data.refresh);
         const user = response.data.user;
         navigator('/login');
-        console.log(response.data,"++++++++++++++++response.data++++++++++++++++++++")
     })
     .catch((error) => {
         if (error.code === 'ERR_BAD_REQUEST') {

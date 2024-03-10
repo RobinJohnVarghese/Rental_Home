@@ -1,5 +1,3 @@
-
-
 import { Header,MyPostDetail} from '../components';
 import { useSelector} from "react-redux";
 import { Navigate  } from 'react-router-dom';

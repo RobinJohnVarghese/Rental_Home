@@ -35,21 +35,6 @@
     background-color: #176c88;
     }
 
-    /* &__breadcrumb {
-        background-color: $color-grey-light;
-        padding: 2rem 4rem;
-        font-size: 1.6rem;
-        margin-top: 2rem;
-
-        &__link {
-            color: $color-primary;
-            text-decoration: none;
-
-            &:hover {
-                color: $color-tertiary;
-            }
-        }
-    } */
 
 .row {
     display: flex;
@@ -85,23 +70,6 @@
 }
     
 
-    /* &__realtor {
-        font-size: 2.4rem;
-        color: $color-primary;
-        margin-top: 2rem;
-        margin-bottom: 1rem;
-    }
-
-    &__contact {
-        font-size: 1.6rem;
-        color: $color-tertiary;
-    }
-
-    &__about {
-        font-size: 1.6rem;
-        margin-top: 1rem;
-    } */
-
 .listingdetail__list{
         list-style: none;
         font-size: 1.6rem;
@@ -115,8 +83,6 @@
 .listingdetail__description{
         font-size: 1.6rem;
     }
-
-
 
     .r-card {
         gap: 0.6rem;

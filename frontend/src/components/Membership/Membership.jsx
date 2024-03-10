@@ -1,32 +1,23 @@
 import Axios from "axios";
-import React, { useState,useEffect } from "react";
-import "./Membership.css";
+import React, { useState } from "react";
 import { baseURL } from '../../api/api';
 import { useSelector, } from "react-redux";
-// import useRazorpay from "react-razorpay";
+
 
 function Membership() {
   const user = useSelector((state)=>state.user);
   const [name, setName] = useState(user.user.name);
   const [amount, setAmount] = useState("");
-  console.log("amount1",amount)
 
   
   const showRazorpay = async () => {
     const res = await loadScript();
     
-    // const requestData = {
-    //   amount: (amount*100).toString(),
-    //   name: name,
-    // };
     const bodyData = new FormData();
 
     // we will pass the amount and product name to the backend using form data
     bodyData.append("amount", amount.toString());
     bodyData.append("name", name);
-    console.log("name and amount2",name,amount)
-    console.log("amount2",amount)
-    console.log('Request Payload:', bodyData,name );
     try {
       const response = await Axios.post(`${baseURL}accounts/pay/`, bodyData, {
         headers: {
@@ -35,7 +26,7 @@ function Membership() {
           "Content-Type": "application/json",
         },
       });
-      console.log('***RESPONSE***',response.data);
+      
 
       const options = {
         key_id: process.env.RAZORPAY_KEY_ID,
@@ -85,9 +76,6 @@ function Membership() {
       bodyData.append("razorpay_order_id", response.razorpay_order_id);
       bodyData.append("razorpay_payment_id", response.razorpay_payment_id);
       bodyData.append("razorpay_signature", response.razorpay_signature);
-      console.log('££££££££££££££response.razorpay_order_id',response.razorpay_order_id)
-      console.log('££££££££££££££response.razorpay_payment_id',response.razorpay_payment_id)
-      console.log('££££££££££££££response.razorpay_signature',response.razorpay_signature)
 
       // Check if 'response.data' is defined before accessing 'response.data.payment'
       if (response.data && response.data.payment) {
@@ -126,38 +114,7 @@ function Membership() {
   
 
   return (
-    // <div className="container" style={{ marginTop: "20vh" }}>
-    //   <form>
-    //     <h1>Payment page</h1>
-
-    //     <div className="form-group">
-    //       <label htmlFor="name">Product name</label>
-    //       <input
-    //         type="text"
-    //         className="form-control"
-    //         id="name"
-    //         value={name}
-    //         onChange={(e) => setName(e.target.value)}
-    //       />
-    //     </div>
-    //     <div className="form-group">
-    //       <label htmlFor="exampleInputPassword1">Amount</label>
-    //       <input
-    //         type="text"
-    //         className="form-control"
-    //         id="amount"
-    //         value={amount}
-    //         onChange={(e) => setAmount(e.target.value)}
-    //       />
-    //     </div>
-    //   </form>
-    //   <button onClick={showRazorpay} className="btn btn-primary btn-block">
-    //     Pay with razorpay
-    //   </button>
-    // </div>
-
-
-
+    
     <div style={{display:"flex"}}>
         <div className="container mt-5 text-center rounded bg-warning border p-5" style={{width:"28%"}}>
             <h1 className="fw-bolder display-2">₹0</h1>
@@ -196,10 +153,8 @@ function Membership() {
                         </ul>
                     </div>
                     <div className="d-grid mt-3">
-                      
                       <button type="button" className="btn btn-light fw-semibold py-3" onClick={() => {setAmount(500);showRazorpay();}}>Upgrad now</button>
-                      {/* onClick={() => {setName(user.user.name);setAmount(500);}} */}
-                    </div>
+                   </div>
                 </div>
         </div>
         <div className="container mt-5 text-center rounded bg-warning border p-5" style={{width:"28%"}}>
@@ -222,7 +177,7 @@ function Membership() {
                         </div>
                     </div>
         </div>
-            </div>
+     </div>
   );
 }
 
